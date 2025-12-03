@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".AddGoalActivity"
+    android:padding="24dp">
+
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:id="@+id/etGoalName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Goal Name"
+                android:padding="12dp"
+                android:textSize="18sp"
+                android:layout_marginBottom="16dp"/>
+
+            <EditText
+                android:id="@+id/etGoalAmount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Required Amount"
+                android:inputType="number"
+                android:padding="12dp"
+                android:textSize="18sp"
+                android:layout_marginBottom="16dp"/>
+
+            <EditText
+                android:id="@+id/etCurrentAmount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Current Money Saved"
+                android:inputType="number"
+                android:padding="12dp"
+                android:textSize="18sp"
+                android:layout_marginBottom="16dp"/>
+
+            <EditText
+                android:id="@+id/etMonths"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Months Available"
+                android:inputType="number"
+                android:padding="12dp"
+                android:textSize="18sp"
+                android:layout_marginBottom="16dp"/>
+
+            <EditText
+                android:id="@+id/etWorkDays"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Work Days Per Week"
+                android:inputType="number"
+                android:padding="12dp"
+                android:textSize="18sp"
+                android:layout_marginBottom="16dp"/>
+
+            <EditText
+                android:id="@+id/etMonthlyExpenses"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Monthly Expenses"
+                android:inputType="number"
+                android:padding="12dp"
+                android:textSize="18sp"
+                android:layout_marginBottom="16dp"/>
+
+            <Button
+                android:id="@+id/btnSaveGoal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Save Goal"
+                android:padding="16dp"
+                android:textSize="18sp"
+                android:layout_gravity="center"/>
+
+        </LinearLayout>
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
