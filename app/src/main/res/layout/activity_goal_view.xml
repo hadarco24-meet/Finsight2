@@ -14,35 +14,35 @@
         android:orientation="vertical"
         android:padding="22dp">
 
-        <TextView
-            android:id="@+id/requiredAmount"
+        <EditText
+            android:id="@+id/etRequiredAmount"
             android:textSize="18dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="8dp"/>
 
-        <TextView
-            android:id="@+id/currentAmount"
+        <EditText
+            android:id="@+id/etCurrentAmount"
             android:textSize="18dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="8dp"/>
 
-        <TextView
-            android:id="@+id/timeTillDue"
+        <EditText
+            android:id="@+id/etMonthsTillDue"
             android:textSize="18dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="8dp"/>
 
-        <TextView
+        <EditText
             android:id="@+id/workDays"
             android:textSize="18dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="8dp"/>
 
-        <TextView
+        <EditText
             android:id="@+id/expenses"
             android:textSize="18dp"
             android:layout_width="match_parent"

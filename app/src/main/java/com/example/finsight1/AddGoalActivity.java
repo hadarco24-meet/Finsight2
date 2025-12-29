@@ -12,7 +12,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 public class AddGoalActivity extends AppCompatActivity {
 
     private EditText etGoalName, etGoalAmount, etCurrentAmount,
-            etMonths, etWorkDays, etMonthlyExpenses;
+            etMonthsTillDue, etWorkDays, etMonthlyExpenses;
     private Button btnSaveGoal;
 
     private FirebaseFirestore db;
@@ -27,7 +27,7 @@ public class AddGoalActivity extends AppCompatActivity {
         etGoalName = findViewById(R.id.etGoalName);
         etGoalAmount = findViewById(R.id.etGoalAmount);
         etCurrentAmount = findViewById(R.id.etCurrentAmount);
-        etMonths = findViewById(R.id.etMonths);
+        etMonthsTillDue = findViewById(R.id.etMonthsTillDue);
         etWorkDays = findViewById(R.id.etWorkDays);
         etMonthlyExpenses = findViewById(R.id.etMonthlyExpenses);
 
@@ -40,23 +40,23 @@ public class AddGoalActivity extends AppCompatActivity {
         String name = etGoalName.getText().toString().trim();
         String amountStr = etGoalAmount.getText().toString().trim();
         String currStr = etCurrentAmount.getText().toString().trim();
-        String monthsStr = etMonths.getText().toString().trim();
+        String etMonthsTillDueStr = etMonthsTillDue.getText().toString().trim();
         String daysStr = etWorkDays.getText().toString().trim();
         String expStr = etMonthlyExpenses.getText().toString().trim();
 
         if (name.isEmpty() || amountStr.isEmpty() || currStr.isEmpty() ||
-                monthsStr.isEmpty() || daysStr.isEmpty() || expStr.isEmpty()) {
+                etMonthsTillDueStr.isEmpty() || daysStr.isEmpty() || expStr.isEmpty()) {
             Toast.makeText(this, "Fill all fields!", Toast.LENGTH_SHORT).show();
             return;
         }
 
         int required = Integer.parseInt(amountStr);
         int current = Integer.parseInt(currStr);
-        int months = Integer.parseInt(monthsStr);
+        int monthsTillDue = Integer.parseInt(etMonthsTillDueStr);
         int workDays = Integer.parseInt(daysStr);
         int expenses = Integer.parseInt(expStr);
 
-        Goal goal = new Goal(name, required, current, months, workDays, expenses);
+        Goal goal = new Goal(name, required, current, monthsTillDue, workDays, expenses);
 
         User.currentUser.getGoals().add(goal);
 

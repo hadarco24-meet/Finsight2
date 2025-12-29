@@ -50,10 +50,10 @@
                 android:layout_marginBottom="16dp"/>
 
             <EditText
-                android:id="@+id/etMonths"
+                android:id="@+id/etMonthsTillDue"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Months Available"
+                android:hint=" Months Till Due"
                 android:inputType="number"
                 android:padding="12dp"
                 android:textSize="18sp"
