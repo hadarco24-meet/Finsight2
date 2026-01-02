@@ -1,5 +1,6 @@
 package com.example.finsight1;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Goal {
@@ -19,8 +20,11 @@ public class Goal {
     //מחושבים
     private double expectedWeeklyIncome;
     private double expectedWeeklyExpenses;
+    private int numberOfWeeks;
 
-    public Goal() {}
+    public Goal() {
+        this.weeklyTrack = new ArrayList<WeeklyTrack>();
+    }
 
     public Goal(String goalName, double requiredAmount, double currentAmount, int monthsTillDue, int workDaysPerWeek, double monthlyExpenses) {
         this.goalName = goalName;
@@ -65,6 +69,8 @@ public class Goal {
     private void weeklyInfo(){
         expectedWeeklyIncome = this.requiredAmount / this.monthsTillDue / 4.2;  //4.2 שבועות בחודש
         expectedWeeklyExpenses = this.monthlyExpenses / 4.2;    //4.2 שבועות בחודש
+        numberOfWeeks = Math.round((int)((double)monthsTillDue * 4.2));
+
     }
 
 }
