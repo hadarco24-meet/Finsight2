@@ -1,54 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
+    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".GoalViewActivity">
+    android:layout_height="match_parent">
 
-    <LinearLayout
-        android:id="@+id/GoalInfoContainer"
-        android:layout_width="wrap_content"
+    <EditText
+        android:id="@+id/etRequiredAmount"
+        android:textSize="18dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="22dp">
+        android:padding="8dp"/>
 
-        <EditText
-            android:id="@+id/etRequiredAmount"
-            android:textSize="18dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="8dp"/>
+    <EditText
+        android:id="@+id/etCurrentAmount"
+        android:textSize="18dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp"/>
 
-        <EditText
-            android:id="@+id/etCurrentAmount"
-            android:textSize="18dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="8dp"/>
+    <EditText
+        android:id="@+id/etMonthsTillDue"
+        android:textSize="18dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp"/>
 
-        <EditText
-            android:id="@+id/etMonthsTillDue"
-            android:textSize="18dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="8dp"/>
+    <EditText
+        android:id="@+id/workDays"
+        android:textSize="18dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp"/>
 
-        <EditText
-            android:id="@+id/workDays"
-            android:textSize="18dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="8dp"/>
+    <EditText
+        android:id="@+id/expenses"
+        android:textSize="18dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp"/>
 
-        <EditText
-            android:id="@+id/expenses"
-            android:textSize="18dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="8dp"/>
+    <TextView
+        android:id="@+id/tvGoalTitleName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="22sp"
+        android:text="Goal Name" />
 
-    </LinearLayout>
+    <TextView
+        android:id="@+id/tvGoalTargetAmount"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+        android:text="Target: $0" />
 
-</ScrollView>
+    <ListView
+        android:id="@+id/lvWeeklyTracks"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+</LinearLayout>

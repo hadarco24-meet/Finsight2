@@ -54,6 +54,12 @@ public class Goal {
     public double getMonthlyExpenses() { return monthlyExpenses; }
     public void setMonthlyExpenses(double monthlyExpenses) { this.monthlyExpenses = monthlyExpenses; }
 
+    public List<WeeklyTrack> getWeeks() {
+        return this.weeklyTrack;
+    }
+    public int getNumberOfWeeks() {
+        return this.numberOfWeeks;
+    }
 
     @Override
     public String toString() {

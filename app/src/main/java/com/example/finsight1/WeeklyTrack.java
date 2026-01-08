@@ -2,10 +2,10 @@ package com.example.finsight1;
 
 public class WeeklyTrack {
 
-    int expenses;
-    int income;
+    double expenses;
+    double income;
 
-    public WeeklyTrack(int expenses, int income) {
+    public WeeklyTrack(double expenses, double income) {
         this.expenses = expenses;
         this.income = income;
     }
@@ -13,19 +13,19 @@ public class WeeklyTrack {
     public WeeklyTrack() {
     }
 
-    public int getExpenses() {
+    public double getExpenses() {
         return expenses;
     }
 
-    public void setExpenses(int expenses) {
+    public void setExpenses(double expenses) {
         this.expenses = expenses;
     }
 
-    public int getIncome() {
+    public double getIncome() {
         return income;
     }
 
-    public void setIncome(int income) {
+    public void setIncome(double income) {
         this.income = income;
     }
 }
