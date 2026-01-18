@@ -77,6 +77,6 @@ public class Goal {
         expectedWeeklyExpenses = this.monthlyExpenses / 4.2;    //4.2 שבועות בחודש
         numberOfWeeks = Math.round((int)((double)monthsTillDue * 4.2));
 
-    }
+    }//todo: להגדיר 4.2 const
 
 }

@@ -19,8 +19,8 @@ public class LoginActivity extends AppCompatActivity {
 
     private EditText etUsernameLogin, etPasswordLogin;
     private Button btnLogin, btnBack;
-
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,27 +56,36 @@ public class LoginActivity extends AppCompatActivity {
         String username = etUsernameLogin.getText().toString().trim();
         String password = etPasswordLogin.getText().toString().trim();
 
-        if (username.isEmpty() || password.isEmpty()) {
+        if (username.isEmpty() || password.isEmpty())
+        {
             Toast.makeText(this, "Fill all fields!", Toast.LENGTH_SHORT).show();
             return;
         }
 
         db.collection("users")
-                .whereEqualTo("username", username)
-                .whereEqualTo("password", password)
+                .document(username)
                 .get()
-                .addOnSuccessListener(query -> {
-                    if (query.isEmpty()) {
-                        Toast.makeText(this, "username or password incorrect", Toast.LENGTH_SHORT).show();
-                    } else {
-                        User loggedUser = query.getDocuments().get(0).toObject(User.class);
-                        User.currentUser = loggedUser;
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        User loggedUser = documentSnapshot.toObject(User.class);
 
-                        Toast.makeText(this, "successfully loged in", Toast.LENGTH_SHORT).show();
+                        if (loggedUser != null && loggedUser.getPassword().equals(password)) {
+                            User.currentUser = loggedUser;
 
-                        Intent i = new Intent(LoginActivity.this, MainActivity.class);
-                        startActivity(i);
-                        finish();
+                            Toast.makeText(this, "successfully logged in", Toast.LENGTH_SHORT).show();
+
+                            Intent i = new Intent(LoginActivity.this, MainActivity.class);
+                            startActivity(i);
+                            finish();
+                        }
+                        else
+                        {
+                            Toast.makeText(this, "username or password incorrect", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                    else
+                    {
+                        Toast.makeText(this, "user does not exist", Toast.LENGTH_SHORT).show();
                     }
                 })
                 .addOnFailureListener(err -> {

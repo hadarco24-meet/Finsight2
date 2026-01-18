@@ -62,16 +62,22 @@ public class SignUpActivity extends AppCompatActivity {
         }
 
         db.collection("users")
-                .whereEqualTo("username", username)
+                .document(username)
                 .get()
-                .addOnSuccessListener(query -> {
-                    if (!query.isEmpty()) {
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
                         Toast.makeText(this, "this username is already taken", Toast.LENGTH_SHORT).show();
-                    } else {
+                    }
+                    else
+                    {
                         User newUser = new User(username, password);
+
                         db.collection("users")
-                                .add(newUser)
-                                .addOnSuccessListener(doc -> {
+                                .document(username)
+                                .set(newUser)
+                                .addOnSuccessListener(aVoid -> {
+                                    User.currentUser = newUser;
+
                                     Toast.makeText(this, "new user created", Toast.LENGTH_SHORT).show();
                                     Intent i = new Intent(SignUpActivity.this, MainActivity.class);
                                     startActivity(i);

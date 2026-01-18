@@ -1,25 +1,19 @@
 package com.example.finsight1;
 
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
-
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.FirebaseFirestore;
-
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
     private FloatingActionButton btnAddGoal;
     private ListView listGoals;
-
-    private ArrayList<String> goalsTextList;
-    private ArrayAdapter<String> adapter;
-
+    private GoalAdapter goalAdapter;
+    private ArrayList<Goal> goalsList;
     private FirebaseFirestore db;
 
     @Override
@@ -27,17 +21,19 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        db = FirebaseFirestore.getInstance();
         btnAddGoal = findViewById(R.id.btnAddGoal);
         listGoals = findViewById(R.id.listGoals);
 
-        db = FirebaseFirestore.getInstance();
+        goalsList = new ArrayList<>();
+        goalAdapter = new GoalAdapter(this, goalsList);
+        listGoals.setAdapter(goalAdapter);
 
-        goalsTextList = new ArrayList<>();
-        adapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_list_item_1,
-                goalsTextList);
-
-        listGoals.setAdapter(adapter);
+        listGoals.setOnItemClickListener((parent, view, position, id) -> {
+            Intent intent = new Intent(MainActivity.this, GoalViewActivity.class);
+            intent.putExtra("goal_index", position);
+            startActivity(intent);
+        });
 
         btnAddGoal.setOnClickListener(v -> {
             Intent i = new Intent(MainActivity.this, AddGoalActivity.class);
@@ -60,20 +56,22 @@ public class MainActivity extends AppCompatActivity {
                 .get()
                 .addOnSuccessListener(doc -> {
                     User updatedUser = doc.toObject(User.class);
-                    User.currentUser = updatedUser;
+                    if (updatedUser != null)
+                    {
+                        User.currentUser = updatedUser;
 
-                    goalsTextList.clear();
-                    for (Goal g : updatedUser.getGoals()) {
-                        goalsTextList.add(g.toString());
+                        goalsList.clear();
+                        if (updatedUser.getGoals() != null)
+                        {
+                            goalsList.addAll(updatedUser.getGoals());
+                        }
+
+                        goalAdapter.notifyDataSetChanged();
                     }
-
-                    adapter.notifyDataSetChanged();
                 })
                 .addOnFailureListener(err ->
                         System.out.println("Failed loading goals")
                 );
-
-
     }
 
     @Override
