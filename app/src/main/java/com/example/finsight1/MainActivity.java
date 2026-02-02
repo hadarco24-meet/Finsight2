@@ -4,6 +4,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ListView;
+
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.ArrayList;
@@ -15,6 +17,7 @@ public class MainActivity extends AppCompatActivity {
     private GoalAdapter goalAdapter;
     private ArrayList<Goal> goalsList;
     private FirebaseFirestore db;
+    private BottomNavigationView bottomNavigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +44,24 @@ public class MainActivity extends AppCompatActivity {
         });
 
         loadGoalsFromFirebase();
+
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setOnItemSelectedListener(item -> {
+            int id = item.getItemId();
+
+            if (id == R.id.nav_home) {
+                return true;
+            }
+            else if (id == R.id.nav_profile) {
+                // startActivity(new Intent(MainActivity.this, ProfileActivity.class));
+                return true;
+            }
+            else if (id == R.id.nav_settings) {
+                // startActivity(new Intent(MainActivity.this, SettingsActivity.class));
+                return true;
+            }
+            return false;
+        });
     }
 
     private void loadGoalsFromFirebase() {
@@ -79,4 +100,6 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         loadGoalsFromFirebase();
     }
+
+
 }

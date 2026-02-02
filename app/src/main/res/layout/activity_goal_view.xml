@@ -31,7 +31,7 @@
         android:padding="8dp"/>
 
     <EditText
-        android:id="@+id/workDays"
+        android:id="@+id/etWorkDaysPerWeek"
         android:textSize="18dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -39,7 +39,7 @@
         android:padding="8dp"/>
 
     <EditText
-        android:id="@+id/expenses"
+        android:id="@+id/etMonthlyExpenses"
         android:textSize="18dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -60,9 +60,25 @@
         android:textSize="18sp"
         android:text="Target: $0" />
 
+    <Button
+        android:id="@+id/btnSaveInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Save Info"
+        android:padding="16dp"
+        android:textSize="18sp"
+        android:layout_gravity="center"/>
+
     <ListView
-        android:id="@+id/lvWeeklyTracks"
+        android:id="@+id/lvWeeklyTrack"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_navigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        app:menu="@menu/bottom_nav_menu" />
 
 </LinearLayout>

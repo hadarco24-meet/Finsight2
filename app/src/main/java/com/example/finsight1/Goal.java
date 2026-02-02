@@ -33,7 +33,13 @@ public class Goal {
         this.monthsTillDue = monthsTillDue;
         this.workDaysPerWeek = workDaysPerWeek;
         this.monthlyExpenses = monthlyExpenses;
+        this.weeklyTrack = new ArrayList<>();
+        weeklyInfo();
+        for (int i = 0; i<= numberOfWeeks; i++){
+            weeklyTrack.add(new WeeklyTrack(0,0));
+        }
     }
+
 
     public String getGoalName() { return goalName; }
     public void setGoalName(String goalName) { this.goalName = goalName; }
@@ -54,9 +60,14 @@ public class Goal {
     public double getMonthlyExpenses() { return monthlyExpenses; }
     public void setMonthlyExpenses(double monthlyExpenses) { this.monthlyExpenses = monthlyExpenses; }
 
-    public List<WeeklyTrack> getWeeks() {
-        return this.weeklyTrack;
+    public List<WeeklyTrack> getWeeklyTrack() {
+        return weeklyTrack;
     }
+
+    public void setWeeklyTrack(List<WeeklyTrack> weeklyTrack) {
+        this.weeklyTrack = weeklyTrack;
+    }
+
     public int getNumberOfWeeks() {
         return this.numberOfWeeks;
     }

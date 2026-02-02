@@ -7,14 +7,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 public class AddGoalActivity extends AppCompatActivity {
 
     private EditText etGoalName, etGoalAmount, etCurrentAmount,
-            etMonthsTillDue, etWorkDays, etMonthlyExpenses;
+            etMonthsTillDue, etWorkDaysPerWeek, etMonthlyExpenses;
     private Button btnSaveGoal;
-
+    private BottomNavigationView bottomNavigationView;
     private FirebaseFirestore db;
 
     @Override
@@ -22,18 +23,34 @@ public class AddGoalActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_goal);
 
-        db = FirebaseFirestore.getInstance();
-
         etGoalName = findViewById(R.id.etGoalName);
         etGoalAmount = findViewById(R.id.etGoalAmount);
         etCurrentAmount = findViewById(R.id.etCurrentAmount);
         etMonthsTillDue = findViewById(R.id.etMonthsTillDue);
-        etWorkDays = findViewById(R.id.etWorkDays);
+        etWorkDaysPerWeek = findViewById(R.id.etWorkDaysPerWeek);
         etMonthlyExpenses = findViewById(R.id.etMonthlyExpenses);
 
         btnSaveGoal = findViewById(R.id.btnSaveGoal);
 
         btnSaveGoal.setOnClickListener(v -> saveGoal());
+
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setOnItemSelectedListener(item -> {
+            int id = item.getItemId();
+
+            if (id == R.id.nav_home) {
+                return true;
+            }
+            else if (id == R.id.nav_profile) {
+                // startActivity(new Intent(MainActivity.this, ProfileActivity.class));
+                return true;
+            }
+            else if (id == R.id.nav_settings) {
+                // startActivity(new Intent(MainActivity.this, SettingsActivity.class));
+                return true;
+            }
+            return false;
+        });
     }
 
     private void saveGoal() {
@@ -41,7 +58,7 @@ public class AddGoalActivity extends AppCompatActivity {
         String amountStr = etGoalAmount.getText().toString().trim();
         String currStr = etCurrentAmount.getText().toString().trim();
         String etMonthsTillDueStr = etMonthsTillDue.getText().toString().trim();
-        String daysStr = etWorkDays.getText().toString().trim();
+        String daysStr = etWorkDaysPerWeek.getText().toString().trim();
         String expStr = etMonthlyExpenses.getText().toString().trim();
 
         if (name.isEmpty() || amountStr.isEmpty() || currStr.isEmpty() ||
