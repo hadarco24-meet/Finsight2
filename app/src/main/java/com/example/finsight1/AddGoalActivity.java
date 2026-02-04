@@ -23,6 +23,8 @@ public class AddGoalActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_goal);
 
+        db = FirebaseFirestore.getInstance();
+
         etGoalName = findViewById(R.id.etGoalName);
         etGoalAmount = findViewById(R.id.etGoalAmount);
         etCurrentAmount = findViewById(R.id.etCurrentAmount);
@@ -87,5 +89,10 @@ public class AddGoalActivity extends AppCompatActivity {
                 .addOnFailureListener(e ->
                         Toast.makeText(this, "Failed to save", Toast.LENGTH_SHORT).show()
                 );
+
+        if (User.currentUser == null) {
+            Toast.makeText(this, "Session expired, please log in again", Toast.LENGTH_LONG).show();
+            finish();
+        }
     }
 }

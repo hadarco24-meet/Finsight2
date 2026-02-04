@@ -38,6 +38,11 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
+        listGoals.setOnItemLongClickListener((parent, view, position, id) -> {
+            showDeleteDialog(position);
+            return true;
+        });
+
         btnAddGoal.setOnClickListener(v -> {
             Intent i = new Intent(MainActivity.this, AddGoalActivity.class);
             startActivity(i);
@@ -99,6 +104,31 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         loadGoalsFromFirebase();
+    }
+
+    private void showDeleteDialog(int position) {
+        new android.app.AlertDialog.Builder(this)
+                .setTitle("Delete goal")
+                .setMessage("do you want to delete the goal " + " '" + goalsList.get(position).getGoalName() + "'" + "?")
+                .setPositiveButton("Yes, delete", (dialog, which) -> {
+                    deleteGoalFromFirebase(position);
+                })
+                .setNegativeButton("No, cancel", null)
+                .show();
+    }
+
+    private void deleteGoalFromFirebase(int position) {
+        goalsList.remove(position);
+
+        User.currentUser.setGoals(goalsList);
+
+        db.collection("users")
+                .document(User.currentUser.getUsername())
+                .set(User.currentUser)
+                .addOnSuccessListener(aVoid -> {
+                    goalAdapter.notifyDataSetChanged();
+                    android.widget.Toast.makeText(this, "Goal deleted", android.widget.Toast.LENGTH_SHORT).show();
+                });
     }
 
 

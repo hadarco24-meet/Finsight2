@@ -1,13 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    >
 
     <TextView
+        android:id="@+id/tvUpdateWeeklyProg"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Update Weekly Progress"
         android:textSize="18sp"/>
+
+    <TextView
+        android:id="@+id/tvIncome"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Income:"
+        android:textSize="12sp"/>
 
     <EditText
         android:id="@+id/etDialogIncome"
@@ -15,7 +25,14 @@
         android:layout_height="wrap_content"
         android:hint="Weekly Income"
         android:inputType="numberDecimal"
-        android:textSize="14sp"/>
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/tvExpenses"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Expenses:"
+        android:textSize="12sp"/>
 
     <EditText
         android:id="@+id/etDialogExpenses"

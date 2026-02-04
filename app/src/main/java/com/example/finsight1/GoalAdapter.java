@@ -25,6 +25,7 @@ public class GoalAdapter extends ArrayAdapter<Goal> {
 
         TextView tvName = convertView.findViewById(R.id.tvItemGoalName);
         TextView tvProgress = convertView.findViewById(R.id.tvItemGoalDetails);
+
         ProgressBar pb = convertView.findViewById(R.id.pbGoalProgress);
 
         tvName.setText(goal.getGoalName());
