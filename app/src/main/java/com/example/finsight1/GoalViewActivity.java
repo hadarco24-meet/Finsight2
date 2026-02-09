@@ -1,5 +1,6 @@
 package com.example.finsight1;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -58,7 +59,7 @@ public class GoalViewActivity extends AppCompatActivity {
 
         if (currentGoal != null) {
             tvTitle.setText(currentGoal.getGoalName());
-            tvTarget.setText("Target: " + currentGoal.getRequiredAmount());
+            tvTarget.setText("Target: " + currentGoal.getRequiredAmount() + User.currentUser.getCurrency());
             adapter = new WeeklyTrackAdapter(this, currentGoal.getWeeklyTrack());
             lvWeeklyTrack.setAdapter(adapter);
 
@@ -77,15 +78,18 @@ public class GoalViewActivity extends AppCompatActivity {
             bottomNavigationView.setOnItemSelectedListener(item -> {
                 int id = item.getItemId();
 
-                if (id == R.id.nav_home) {
+                if (id == R.id.nav_home)
+                {
                     return true;
                 }
-                else if (id == R.id.nav_profile) {
-                    // startActivity(new Intent(MainActivity.this, ProfileActivity.class));
+                else if (id == R.id.nav_settings)
+                {
+                    startActivity(new Intent(this, SettingsActivity.class));
                     return true;
                 }
-                else if (id == R.id.nav_settings) {
-                    // startActivity(new Intent(MainActivity.this, SettingsActivity.class));
+                else if (id == R.id.nav_settings)
+                {
+                    startActivity(new Intent(this, MainActivity.class));
                     return true;
                 }
                 return false;

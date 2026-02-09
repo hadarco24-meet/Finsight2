@@ -37,8 +37,8 @@ public class WeeklyTrackAdapter extends ArrayAdapter<WeeklyTrack> {
 
         if (currentTrack != null){
             tvWeekX.setText("Week " + (position + 1));
-            tvIncome.setText("Income: " + currentTrack.getIncome());
-            tvExpenses.setText("Expenses: " + currentTrack.getExpenses());
+            tvIncome.setText("Income: " + currentTrack.getIncome() + User.currentUser.getCurrency());
+            tvExpenses.setText("Expenses: " + currentTrack.getExpenses() + User.currentUser.getCurrency());
         }
         return convertView;
     }}
