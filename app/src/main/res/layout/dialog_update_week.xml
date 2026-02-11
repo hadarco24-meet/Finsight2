@@ -3,6 +3,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:layout_weight="1"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:paddingTop="16dp"
+    android:paddingBottom="16dp"
+    android:gravity="start"
     >
 
     <TextView
@@ -16,8 +22,9 @@
         android:id="@+id/tvIncome"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:paddingTop="16dp"
         android:text="Income:"
-        android:textSize="12sp"/>
+        android:textSize="14sp"/>
 
     <EditText
         android:id="@+id/etDialogIncome"
@@ -31,8 +38,9 @@
         android:id="@+id/tvExpenses"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:paddingTop="16dp"
         android:text="Expenses:"
-        android:textSize="12sp"/>
+        android:textSize="14sp"/>
 
     <EditText
         android:id="@+id/etDialogExpenses"

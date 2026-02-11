@@ -43,6 +43,7 @@ public class AddGoalActivity extends AppCompatActivity {
 
             if (id == R.id.nav_home)
             {
+                startActivity(new Intent(this, MainActivity.class));
                 return true;
             }
             else if (id == R.id.nav_settings)
@@ -50,9 +51,9 @@ public class AddGoalActivity extends AppCompatActivity {
                 startActivity(new Intent(this, SettingsActivity.class));
                 return true;
             }
-            else if (id == R.id.nav_settings)
+            else if (id == R.id.nav_insights)
             {
-                startActivity(new Intent(this, MainActivity.class));
+                startActivity(new Intent(this, InsightsActivity.class));
                 return true;
             }
             return false;
@@ -61,11 +62,11 @@ public class AddGoalActivity extends AppCompatActivity {
 
     private void saveGoal() {
         String name = etGoalName.getText().toString().trim();
-        String amountStr = etGoalAmount.getText().toString().trim();
-        String currStr = etCurrentAmount.getText().toString().trim();
+        String amountStr = etGoalAmount.getText() + User.currentUser.getCurrency().toString().trim();
+        String currStr = etCurrentAmount.getText() + User.currentUser.getCurrency().toString().trim();
         String etMonthsTillDueStr = etMonthsTillDue.getText().toString().trim();
         String daysStr = etWorkDaysPerWeek.getText().toString().trim();
-        String expStr = etMonthlyExpenses.getText().toString().trim();
+        String expStr = etMonthlyExpenses.getText() + User.currentUser.getCurrency().toString().trim();
 
         if (name.isEmpty() || amountStr.isEmpty() || currStr.isEmpty() ||
                 etMonthsTillDueStr.isEmpty() || daysStr.isEmpty() || expStr.isEmpty()) {

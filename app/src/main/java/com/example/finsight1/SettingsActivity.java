@@ -12,11 +12,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.SwitchCompat;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 public class SettingsActivity extends AppCompatActivity {
 
-    private TextView tvNameIcon, tvUsername;
+    private TextView tvNameIcon, tvUsername2;
     private RadioGroup rbGroup;
     private SwitchCompat swDarkMode;
     private Button btnClearData, btnLogout;
@@ -30,11 +31,11 @@ public class SettingsActivity extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
 
         tvNameIcon = findViewById(R.id.tvNameIcon);
-        tvUsername = findViewById(R.id.tvUsername);
+        tvUsername2 = findViewById(R.id.tvUsername2);
 
         if (User.currentUser != null) {
             String name = User.currentUser.getUsername();
-            tvUsername.setText(name);
+            tvUsername2.setText(name);
             String letter = name.substring(0, 1).toUpperCase();
             tvNameIcon.setText(letter);
         }
@@ -62,15 +63,12 @@ public class SettingsActivity extends AppCompatActivity {
         swDarkMode = findViewById(R.id.swDarkMode);
         swDarkMode.setChecked(AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES);
 
-        swDarkMode.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if (isChecked)
-            {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-            }
-            else
-            {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-            }
+        swDarkMode.setOnCheckedChangeListener((v, isChecked) -> {
+            User.currentUser.setDarkMode(isChecked);
+            saveUserToFirebase();
+
+            if (isChecked) AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+            else AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         });
 
         btnClearData = findViewById(R.id.btnClearData);
@@ -83,13 +81,35 @@ public class SettingsActivity extends AppCompatActivity {
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
         });
+
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setOnItemSelectedListener(item -> {
+            int id = item.getItemId();
+
+            if (id == R.id.nav_home)
+            {
+                startActivity(new Intent(this, MainActivity.class));
+                return true;
+            }
+            else if (id == R.id.nav_settings)
+            {
+                startActivity(new Intent(this, SettingsActivity.class));
+                return true;
+            }
+            else if (id == R.id.nav_insights)
+            {
+                startActivity(new Intent(this, InsightsActivity.class));
+                return true;
+            }
+            return false;
+        });
     }
 
     private void saveUserToFirebase() {
         db.collection("users")
                 .document(User.currentUser.getUsername())
                 .set(User.currentUser)
-                .addOnSuccessListener(unused -> Toast.makeText(this, "הגדרות נשמרו", Toast.LENGTH_SHORT).show());
+                .addOnSuccessListener(unused -> Toast.makeText(this, "Settings saved", Toast.LENGTH_SHORT).show());
     }
 
     private void showDeleteConfirmation() {

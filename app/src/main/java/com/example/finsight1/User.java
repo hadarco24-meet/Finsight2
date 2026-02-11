@@ -8,6 +8,7 @@ public class User {
     private String password;
     private String currency;
     private ArrayList<Goal> goals;
+    private boolean isDarkMode;
 
     public static User currentUser = null;
 
@@ -31,6 +32,14 @@ public class User {
 
     public ArrayList<Goal> getGoals() { return goals; }
     public void setGoals(ArrayList<Goal> goals) { this.goals = goals; }
+
+    public boolean isDarkMode() {
+        return isDarkMode;
+    }
+
+    public void setDarkMode(boolean darkMode) {
+        isDarkMode = darkMode;
+    }
 
     public String getCurrency() {
         return currency;

@@ -16,7 +16,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:gravity="center_horizontal"
             android:padding="20dp">
 
             <TextView
@@ -30,7 +29,15 @@
                 android:layout_marginTop="14dp"/>
 
             <TextView
-                android:id="@+id/tvUsername"
+                android:id="@+id/tvUsername1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:text="Username:"
+                android:layout_marginTop="8dp"/>
+
+            <TextView
+                android:id="@+id/tvUsername2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="24sp"
@@ -40,8 +47,9 @@
                 android:id="@+id/tvCurrency"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textSize="18sp"
                 android:text="Choose Currency:"
-                android:layout_marginTop="20dp"/>
+                android:layout_marginTop="30dp"/>
 
             <RadioGroup
                 android:id="@+id/rbGroup"
@@ -70,8 +78,9 @@
                 android:id="@+id/swDarkMode"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="30dp"
                 android:text="Dark Mode "
+                android:textSize="18sp"
                 android:checked="true"/>
 
             <Button
@@ -79,6 +88,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="30dp"
+                android:textSize="16sp"
                 android:text="Clear All Data" />
 
             <Button
@@ -86,6 +96,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
+                android:textSize="16sp"
                 android:text="Logout"/>
 
         </LinearLayout>

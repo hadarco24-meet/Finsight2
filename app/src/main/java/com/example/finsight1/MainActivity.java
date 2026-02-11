@@ -56,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
 
             if (id == R.id.nav_home)
             {
+                startActivity(new Intent(this, MainActivity.class));
                 return true;
             }
             else if (id == R.id.nav_settings)
@@ -63,13 +64,14 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(this, SettingsActivity.class));
                 return true;
             }
-            else if (id == R.id.nav_settings)
+            else if (id == R.id.nav_insights)
             {
-                startActivity(new Intent(this, MainActivity.class));
+                startActivity(new Intent(this, InsightsActivity.class));
                 return true;
             }
             return false;
         });
+
     }
 
     private void loadGoalsFromFirebase() {

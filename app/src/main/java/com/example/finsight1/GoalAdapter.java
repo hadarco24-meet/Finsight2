@@ -24,13 +24,15 @@ public class GoalAdapter extends ArrayAdapter<Goal> {
         Goal goal = getItem(position);
 
         TextView tvName = convertView.findViewById(R.id.tvItemGoalName);
-        TextView tvProgress = convertView.findViewById(R.id.tvItemGoalDetails);
+        TextView tvRequired = convertView.findViewById(R.id.tvRequired);
+        TextView tvCurrent = convertView.findViewById(R.id.tvCurrent);
         TextView tvGoalPercentage = convertView.findViewById(R.id.tvGoalPercentage);
 
         ProgressBar pb = convertView.findViewById(R.id.pbGoalProgress);
 
         tvName.setText(goal.getGoalName());
-        tvProgress.setText("required: " + goal.getRequiredAmount() + User.currentUser.getCurrency() + " current: " + goal.getCurrentAmount() + User.currentUser.getCurrency());
+        tvRequired.setText("required: " + goal.getRequiredAmount() + User.currentUser.getCurrency());
+        tvCurrent.setText("current: " + goal.getCurrentAmount() + User.currentUser.getCurrency());
 
         int progress = (int) ((goal.getCurrentAmount() / goal.getRequiredAmount()) * 100.0);
         pb.setProgress(progress);

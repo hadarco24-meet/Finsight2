@@ -80,6 +80,7 @@ public class GoalViewActivity extends AppCompatActivity {
 
                 if (id == R.id.nav_home)
                 {
+                    startActivity(new Intent(this, MainActivity.class));
                     return true;
                 }
                 else if (id == R.id.nav_settings)
@@ -87,9 +88,9 @@ public class GoalViewActivity extends AppCompatActivity {
                     startActivity(new Intent(this, SettingsActivity.class));
                     return true;
                 }
-                else if (id == R.id.nav_settings)
+                else if (id == R.id.nav_insights)
                 {
-                    startActivity(new Intent(this, MainActivity.class));
+                    startActivity(new Intent(this, InsightsActivity.class));
                     return true;
                 }
                 return false;
@@ -132,20 +133,44 @@ public class GoalViewActivity extends AppCompatActivity {
     }
 
     public void SaveInfo() {
-        currentGoal.setRequiredAmount(Double.parseDouble(etRequiredAmount.getText().toString()));
-        currentGoal.setCurrentAmount(Double.parseDouble(etCurrentAmount.getText().toString()));
-        currentGoal.setMonthsTillDue(Integer.parseInt(etMonthsTillDue.getText().toString()));
-        currentGoal.setWorkDaysPerWeek(Integer.parseInt(etWorkDaysPerWeek.getText().toString()));
-        currentGoal.setMonthlyExpenses(Double.parseDouble(etMonthlyExpenses.getText().toString()));
+        try
+        {
+            String requiredStr = etRequiredAmount.getText().toString().trim();
+            String currentStr = etCurrentAmount.getText().toString().trim();
+            String monthsStr = etMonthsTillDue.getText().toString().trim();
+            String daysStr = etWorkDaysPerWeek.getText().toString().trim();
+            String expensesStr = etMonthlyExpenses.getText().toString().trim();
 
-        db.collection("users")
-                .document(User.currentUser.getUsername())
-                .set(User.currentUser)
-                .addOnSuccessListener(unused -> {
-                    Toast.makeText(this, "Goal updated successfully!", Toast.LENGTH_SHORT).show();
-                })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(this, "Update failed", Toast.LENGTH_SHORT).show();
-                });
+            if (requiredStr.isEmpty() || currentStr.isEmpty() || monthsStr.isEmpty() ||
+                    daysStr.isEmpty() || expensesStr.isEmpty())
+            {
+                Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            currentGoal.setRequiredAmount(Double.parseDouble(requiredStr));
+            currentGoal.setCurrentAmount(Double.parseDouble(currentStr));
+            currentGoal.setMonthsTillDue(Integer.parseInt(monthsStr));
+            currentGoal.setWorkDaysPerWeek(Integer.parseInt(daysStr));
+            currentGoal.setMonthlyExpenses(Double.parseDouble(expensesStr));
+
+            db.collection("users")
+                    .document(User.currentUser.getUsername())
+                    .set(User.currentUser)
+                    .addOnSuccessListener(unused ->
+                    {
+                        Toast.makeText(this, "Information updated successfully", Toast.LENGTH_SHORT).show();
+                        tvTarget.setText("Target: " + currentGoal.getRequiredAmount() + User.currentUser.getCurrency());
+                    })
+                    .addOnFailureListener(e ->
+                    {
+                        Toast.makeText(this, "Update failed", Toast.LENGTH_SHORT).show();
+                    });
+
+        }
+        catch (Exception e)
+        {
+            Toast.makeText(this, "Please enter numbers only", Toast.LENGTH_SHORT).show();
+        }
     }
 }
