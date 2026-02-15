@@ -62,42 +62,44 @@ public class AddGoalActivity extends AppCompatActivity {
 
     private void saveGoal() {
         String name = etGoalName.getText().toString().trim();
-        String amountStr = etGoalAmount.getText() + User.currentUser.getCurrency().toString().trim();
-        String currStr = etCurrentAmount.getText() + User.currentUser.getCurrency().toString().trim();
+        String amountStr = etGoalAmount.getText().toString().trim();
+        String currStr = etCurrentAmount.getText().toString().trim();
         String etMonthsTillDueStr = etMonthsTillDue.getText().toString().trim();
         String daysStr = etWorkDaysPerWeek.getText().toString().trim();
-        String expStr = etMonthlyExpenses.getText() + User.currentUser.getCurrency().toString().trim();
+        String expStr = etMonthlyExpenses.getText().toString().trim();
 
         if (name.isEmpty() || amountStr.isEmpty() || currStr.isEmpty() ||
-                etMonthsTillDueStr.isEmpty() || daysStr.isEmpty() || expStr.isEmpty()) {
+                etMonthsTillDueStr.isEmpty() || daysStr.isEmpty() || expStr.isEmpty())
+        {
             Toast.makeText(this, "Fill all fields!", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        int required = Integer.parseInt(amountStr);
-        int current = Integer.parseInt(currStr);
-        int monthsTillDue = Integer.parseInt(etMonthsTillDueStr);
-        int workDays = Integer.parseInt(daysStr);
-        int expenses = Integer.parseInt(expStr);
+        try
+        {
+            double required = Double.parseDouble(amountStr);
+            double current = Double.parseDouble(currStr);
+            int monthsTillDue = Integer.parseInt(etMonthsTillDueStr);
+            int workDays = Integer.parseInt(daysStr);
+            double expenses = Double.parseDouble(expStr);
 
-        Goal goal = new Goal(name, required, current, monthsTillDue, workDays, expenses);
+            Goal goal = new Goal(name, required, current, monthsTillDue, workDays, expenses);
+            User.currentUser.getGoals().add(goal);
 
-        User.currentUser.getGoals().add(goal);
-
-        db.collection("users")
-                .document(User.currentUser.getUsername())
-                .set(User.currentUser)
-                .addOnSuccessListener(unused -> {
-                    Toast.makeText(this, "Goal saved!", Toast.LENGTH_SHORT).show();
-                    finish();
-                })
-                .addOnFailureListener(e ->
-                        Toast.makeText(this, "Failed to save", Toast.LENGTH_SHORT).show()
-                );
-
-        if (User.currentUser == null) {
-            Toast.makeText(this, "Session expired, please log in again", Toast.LENGTH_LONG).show();
-            finish();
+            db.collection("users")
+                    .document(User.currentUser.getUsername())
+                    .set(User.currentUser)
+                    .addOnSuccessListener(unused -> {
+                        Toast.makeText(this, "Goal saved!", Toast.LENGTH_SHORT).show();
+                        finish();
+                    })
+                    .addOnFailureListener(e ->
+                            Toast.makeText(this, "Failed to save", Toast.LENGTH_SHORT).show()
+                    );
+        }
+        catch (NumberFormatException e)
+        {
+            Toast.makeText(this, "Please enter valid numbers", Toast.LENGTH_SHORT).show();
         }
     }
 }

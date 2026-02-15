@@ -22,6 +22,7 @@ public class SettingsActivity extends AppCompatActivity {
     private SwitchCompat swDarkMode;
     private Button btnClearData, btnLogout;
     private FirebaseFirestore db;
+    private BottomNavigationView bottomNavigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,79 +33,77 @@ public class SettingsActivity extends AppCompatActivity {
 
         tvNameIcon = findViewById(R.id.tvNameIcon);
         tvUsername2 = findViewById(R.id.tvUsername2);
+        rbGroup = findViewById(R.id.rbGroup);
+        swDarkMode = findViewById(R.id.swDarkMode);
+        btnClearData = findViewById(R.id.btnClearData);
+        btnLogout = findViewById(R.id.btnLogout);
+        bottomNavigationView = findViewById(R.id.bottom_navigation);
 
         if (User.currentUser != null) {
             String name = User.currentUser.getUsername();
             tvUsername2.setText(name);
-            String letter = name.substring(0, 1).toUpperCase();
-            tvNameIcon.setText(letter);
+            if (name != null && !name.isEmpty()) {
+                tvNameIcon.setText(name.substring(0, 1).toUpperCase());
+            }
         }
 
-        rbGroup = findViewById(R.id.rbGroup);
-        rbGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                if (checkedId == R.id.rbShekel)
-                {
-                    User.currentUser.setCurrency("₪");
-                }
-                else if (checkedId == R.id.rbDollar)
-                {
-                    User.currentUser.setCurrency("$");
-                }
-                else if (checkedId == R.id.rbEuro)
-                {
-                    User.currentUser.setCurrency("€");
-                }
-                saveUserToFirebase();
-            }
-        });
+        String currentCurrency = User.currentUser.getCurrency();
+        if (currentCurrency.equals("₪")) rbGroup.check(R.id.rbShekel);
+        else if (currentCurrency.equals("$")) rbGroup.check(R.id.rbDollar);
+        else if (currentCurrency.equals("€")) rbGroup.check(R.id.rbEuro);
 
-        swDarkMode = findViewById(R.id.swDarkMode);
         swDarkMode.setChecked(AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES);
 
-        swDarkMode.setOnCheckedChangeListener((v, isChecked) -> {
+        swDarkMode.setOnCheckedChangeListener((buttonView, isChecked) -> {
             User.currentUser.setDarkMode(isChecked);
+
+            if (isChecked)
+            {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+            }
+            else
+            {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+            }
+
             saveUserToFirebase();
-
-            if (isChecked) AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-            else AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         });
 
-        btnClearData = findViewById(R.id.btnClearData);
+        rbGroup.setOnCheckedChangeListener((group, checkedId) -> {
+            if (checkedId == R.id.rbShekel) User.currentUser.setCurrency("₪");
+            else if (checkedId == R.id.rbDollar) User.currentUser.setCurrency("$");
+            else if (checkedId == R.id.rbEuro) User.currentUser.setCurrency("€");
+
+            saveUserToFirebase();
+        });
+
         btnClearData.setOnClickListener(v -> showDeleteConfirmation());
+        btnLogout.setOnClickListener(v -> logout());
 
-        btnLogout = findViewById(R.id.btnLogout);
-        btnLogout.setOnClickListener(v -> {
-            User.currentUser = null;
-            Intent intent = new Intent(SettingsActivity.this, LoginActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
-        });
+        setupNavigation();
+    }
 
-        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+    private void setupNavigation() {
+        bottomNavigationView.setSelectedItemId(R.id.nav_settings);
         bottomNavigationView.setOnItemSelectedListener(item -> {
             int id = item.getItemId();
-
-            if (id == R.id.nav_home)
-            {
+            if (id == R.id.nav_home) {
                 startActivity(new Intent(this, MainActivity.class));
                 return true;
-            }
-            else if (id == R.id.nav_settings)
-            {
-                startActivity(new Intent(this, SettingsActivity.class));
-                return true;
-            }
-            else if (id == R.id.nav_insights)
-            {
+            } else if (id == R.id.nav_insights) {
                 startActivity(new Intent(this, InsightsActivity.class));
                 return true;
             }
-            return false;
+            return id == R.id.nav_settings;
         });
     }
-
+    private void logout() {
+        User.currentUser = null;
+        Intent intent = new Intent(SettingsActivity.this, LoginActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        finish();
+    }
     private void saveUserToFirebase() {
         db.collection("users")
                 .document(User.currentUser.getUsername())
