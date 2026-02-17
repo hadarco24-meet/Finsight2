@@ -87,10 +87,13 @@ public class SettingsActivity extends AppCompatActivity {
         bottomNavigationView.setSelectedItemId(R.id.nav_settings);
         bottomNavigationView.setOnItemSelectedListener(item -> {
             int id = item.getItemId();
-            if (id == R.id.nav_home) {
+            if (id == R.id.nav_home)
+            {
                 startActivity(new Intent(this, MainActivity.class));
                 return true;
-            } else if (id == R.id.nav_insights) {
+            }
+            else if (id == R.id.nav_insights)
+            {
                 startActivity(new Intent(this, InsightsActivity.class));
                 return true;
             }

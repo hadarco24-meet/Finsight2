@@ -56,7 +56,6 @@ public class MainActivity extends AppCompatActivity {
 
             if (id == R.id.nav_home)
             {
-                startActivity(new Intent(this, MainActivity.class));
                 return true;
             }
             else if (id == R.id.nav_settings)
