@@ -18,30 +18,33 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.google.ai.client.generativeai.GenerativeModel;
-import com.google.ai.client.generativeai.java.GenerativeModelFutures;
-import com.google.ai.client.generativeai.type.Content;
-import com.google.ai.client.generativeai.type.GenerateContentResponse;
+import com.google.firebase.ai.java.GenerativeModelFutures;
+import com.google.firebase.ai.type.Content;
+import com.google.firebase.ai.type.GenerateContentResponse;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
+import com.google.firebase.ai.FirebaseAI;
+import com.google.firebase.ai.GenerativeModel;
+import com.google.firebase.ai.type.GenerativeBackend;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 public class InsightsActivity extends AppCompatActivity {
+
 
     private TextView tvInsightsContent;
     private Button btnGenerate;
     private ProgressBar pbLoading;
     private BottomNavigationView bottomNavigationView;
-    private GenerativeModelFutures model;
     private Spinner spinnerGoals;
-    private ArrayList<String> goalsList;
-    private Goal selectedGoal;
-    private String finalPrompt;
-    private ListenableFuture<GenerateContentResponse> respons;
+    private List<String> goalsList;
+    private ArrayList<String> goalNames;
 
 
     @Override
@@ -62,101 +65,111 @@ public class InsightsActivity extends AppCompatActivity {
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         spinnerGoals = findViewById(R.id.spinnerGoals);
 
-        GenerativeModel gm = new GenerativeModel("gemini-1.5-flash", "AIzaSyD7SAC64pvvhr8l7diWnO1R87gIzQjqeqM");
+        pbLoading.setVisibility(View.GONE);
+
         goalsList = new ArrayList<>();
-        setupNavigation();
-
-        goalsList.add("General insights");
-
-        for( int i = 0; i < User.currentUser.getGoals().size(); i++)
-        {
-            goalsList.add(User.currentUser.getGoals().get(i).getGoalName());
+        goalsList.add("General Insight");
+        if (User.currentUser != null && User.currentUser.getGoals() != null) {
+            for( int i = 0; i < User.currentUser.getGoals().size(); i++) {
+                goalsList.add(User.currentUser.getGoals().get(i).getGoalName());
+            }
         }
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,android.R.layout.simple_spinner_item, goalsList);
+        else {
+            Toast.makeText(this, "User not connected/ no goals available", Toast.LENGTH_SHORT).show();
+        }
+        goalNames = new ArrayList<>(goalsList);
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, goalsList);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerGoals.setAdapter(adapter);
 
-        btnGenerate.setOnClickListener(v -> {
-            int index = spinnerGoals.getSelectedItemPosition();
-            pbLoading.setVisibility(View.VISIBLE);
-            btnGenerate.setEnabled(false);
+        btnGenerate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String selectedItem = spinnerGoals.getSelectedItem().toString();
 
-            if(index == 0 ){
-                StringBuilder sb = new StringBuilder("Analyze all my financial goals: ");
-                for (int i = 0; i < User.currentUser.getGoals().size(); i++) {
-                    Goal currentGoal = User.currentUser.getGoals().get(i);
-                    sb.append("Goal: ").append(currentGoal.getGoalName())
-                            .append(" (").append(currentGoal.getCurrentAmount())
-                            .append("/").append(currentGoal.getRequiredAmount()).append("), ");
+                tvInsightsContent.setText("Generating insights, please wait..");
+                pbLoading.setVisibility(View.VISIBLE);
+                btnGenerate.setEnabled(false);
+
+                if (selectedItem.equals("General Insight")) {
+                    askAI("You are a financial assistant. Give me a general motivational quote about saving money, tracking expenses, and being financially responsible. Please format it nicely.");
                 }
-                sb.append("Tell me which goal process is best and give tips and a motivational sentence.");
-                finalPrompt = sb.toString();
-            }
-            else{
-                selectedGoal = User.currentUser.getGoals().get(index - 1);
-                finalPrompt = generatePrompt(selectedGoal);
-            }
+                else {
+                    Goal targetGoal = null;
 
-            Content content = new Content.Builder().addText(finalPrompt).build();
-            respons = model.generateContent(content);
-
-            Futures.addCallback(respons, new FutureCallback<GenerateContentResponse>() {
-                @Override
-                public void onSuccess(GenerateContentResponse result) {
-//                    Log.d("GEMINI_DEBUG", "Success! Response: " + result.getText());
-//                    tvInsightsContent.setText(result.getText());
-//                    pbLoading.setVisibility(View.GONE);
-//                    btnGenerate.setEnabled(true);
-                    runOnUiThread(() -> {
-                        try {
-                            String output = result.getText();
-                            tvInsightsContent.setText(output != null ? output : "No response from AI");
-                        } catch (Exception e) {
-                            tvInsightsContent.setText("Error parsing response");
+                    for (int i = 0; i < User.currentUser.getGoals().size(); i++) {
+                        if (User.currentUser.getGoals().get(i).getGoalName().equals(selectedItem)) {
+                            targetGoal = User.currentUser.getGoals().get(i);
+                            break;
                         }
-                        pbLoading.setVisibility(View.GONE);
-                        btnGenerate.setEnabled(true);
-                    });
+                    }
+                    if (targetGoal != null) {
+                        String finalPrompt = generatePrompt(targetGoal);
+                        askAI(finalPrompt);
+                    }
+                    else {
+                        Toast.makeText(InsightsActivity.this, "failed to access goals", Toast.LENGTH_SHORT).show();
+                    }
                 }
+            }
 
-                @Override
-                public void onFailure(Throwable t) {
-//                    Log.e("GEMINI_DEBUG", "Failed!", t);
-//                    tvInsightsContent.setText("Error detail: " + t.getMessage());
-//                    pbLoading.setVisibility(View.GONE);
-//                    btnGenerate.setEnabled(true);
-                    runOnUiThread(() -> {
-                        Log.e("GEMINI_ERROR", "Failed", t);
-                        tvInsightsContent.setText("Error: " + t.getMessage());
-                        pbLoading.setVisibility(View.GONE);
-                        btnGenerate.setEnabled(true);
-                        Toast.makeText(InsightsActivity.this, "Check connection", Toast.LENGTH_SHORT).show();
-                    });
-                }
-            }, ContextCompat.getMainExecutor(this));
-
-           });
-
-
+        });
+        setupNavigation();
+        bottomNavigationView.setSelectedItemId(R.id.nav_insights);
     }
 
+    private String generatePrompt(Goal selectedGoal) {
 
-    private String generatePrompt(Goal goal) {
         StringBuilder sb = new StringBuilder();
-        sb.append("You are a financial assistant. Analyze my progress for my saving goal:  " + goal.getGoalName() + "\n");
-        sb.append("this is the reqiued amount of money i am aiming for: " + goal.getRequiredAmount() + "\n");
-        sb.append("this is the amount of money i have right now: " + goal.getCurrentAmount() + "\n");
+        sb.append("You are a financial assistant. Analyze my progress for my saving goal:  " + selectedGoal.getGoalName() + "\n");
+        sb.append("this is the required amount of money i am aiming for: " + selectedGoal.getRequiredAmount() + "\n");
+        sb.append("this is the amount of money i have right now: " + selectedGoal.getCurrentAmount() + "\n");
         sb.append("this is the currency i am using: " + User.currentUser.getCurrency() + "\n");
 
-        for (int i = 0; i < goal.getWeeklyTrack().size(); i++){
-            WeeklyTrack week = goal.getWeeklyTrack().get(i);
+        for (int i = 0; i < selectedGoal.getWeeklyTrack().size(); i++){
+            WeeklyTrack week = selectedGoal.getWeeklyTrack().get(i);
             if (week.getExpenses() != 0.0 || week.getIncome() != 0.0){
-                sb.append("Week " + i + ": Income: " + week.getIncome() + ", Expenses: " + week.getExpenses() + "\n");            }
+                sb.append("Week " + (i+1) + ": Income: " + week.getIncome() + ", Expenses: " + week.getExpenses() + "\n");            }
         }
-        sb.append("/n/n" + "Based on this weekly data, please tell me: was there a period of time (a couple of weeks or more) which was more successful then others (higher incomes), which week was the best, which was the worst, and give me a motivational quote that suits my process. Please answer in english, and in an organized format of a sub title (bigger size text), under it the relevant insight, and so on. " + "\n");
-        return finalPrompt = sb.toString();
+        sb.append("\n\n" + "Based on this weekly data, please tell me: was there a period of time (a couple of weeks or more) which was more successful then others (higher incomes), which week was the best, which was the worst, and give me a motivational quote that suits my process. Please answer in english, and in an organized format of a sub title (bigger size text), under it the relevant insight, and so on. " + "\n");
+        return sb.toString();
     }
 
+private void askAI(String promptText) {
+
+    GenerativeModel ai = FirebaseAI.getInstance(GenerativeBackend.googleAI())
+            .generativeModel("gemini-2.5-flash-lite");
+    GenerativeModelFutures model = GenerativeModelFutures.from(ai);
+
+    Executor executor = Executors.newSingleThreadExecutor();
+
+    Content prompt = new Content.Builder()
+            .addText(promptText)
+            .build();
+
+    ListenableFuture<GenerateContentResponse> response = model.generateContent(prompt);
+    Futures.addCallback(response, new FutureCallback<GenerateContentResponse>() {
+        @Override
+        public void onSuccess(GenerateContentResponse result) {
+            String resultText = result.getText();
+            runOnUiThread(() -> {
+                tvInsightsContent.setText(resultText);
+                pbLoading.setVisibility(View.GONE);
+                btnGenerate.setEnabled(true);
+            });
+        }
+
+        @Override
+        public void onFailure(Throwable t) {
+            runOnUiThread(() -> {
+                Toast.makeText(InsightsActivity.this, "Failed accessing insights. Try again please", Toast.LENGTH_SHORT).show();
+                pbLoading.setVisibility(View.GONE);
+                btnGenerate.setEnabled(true);
+            });
+            Log.d("InsightsAI", Log.getStackTraceString(t));
+        }
+    }, executor);}
 
     private void setupNavigation(){
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
