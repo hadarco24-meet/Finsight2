@@ -132,7 +132,7 @@ public class InsightsActivity extends AppCompatActivity {
             if (week.getExpenses() != 0.0 || week.getIncome() != 0.0){
                 sb.append("Week " + (i+1) + ": Income: " + week.getIncome() + ", Expenses: " + week.getExpenses() + "\n");            }
         }
-        sb.append("\n\n" + "Based on this weekly data, please tell me: was there a period of time (a couple of weeks or more) which was more successful then others (higher incomes), which week was the best, which was the worst, and give me a motivational quote that suits my process. Please answer in english, and in an organized format of a sub title (bigger size text), under it the relevant insight, and so on. " + "\n");
+        sb.append("\n\n" + "Based on this weekly data, please tell me: was there a period of time (a couple of weeks or more) which was more successful then others (higher incomes), which week was the best, which was the worst, and give me a motivational quote that suits my process. Please answer in english, and in an organized format of a sub title (bigger size text), under it the relevant insight, and so on. and without any special characters like # or * please so the ui will be clean and nice. " + "\n");
         return sb.toString();
     }
 
@@ -190,6 +190,16 @@ private void askAI(String promptText) {
             {
                 return true;
             }
+            else if (id == R.id.nav_timer)
+            {
+                startActivity(new Intent(this, TimerActivity.class));
+                return true;
+            }
+//            else if (id == R.id.nav_notification)
+//            {
+//                startActivity(new Intent(this, NotificationActivity.class));
+//                return true;
+//            }
             return false;
         });
     }

@@ -19,5 +19,18 @@
         android:title="Insights"
         />
 
+    <item
+        android:id="@+id/nav_timer"
+        android:icon="@drawable/ic_timer"
+        android:title="Timer"
+        />
+
+    <item
+        android:id="@+id/nav_notification"
+        android:icon="@drawable/ic_notification"
+        android:title="Notification"
+        />
+
+
 
 </menu>
