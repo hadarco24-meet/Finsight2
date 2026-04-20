@@ -1,5 +1,6 @@
 package com.example.finsight1;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.widget.ArrayAdapter;
@@ -16,6 +17,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +41,8 @@ public class TimerActivity extends AppCompatActivity {
     private int mins;
     private int secs;
     private String timeString;
-
+    private FirebaseFirestore db;
+    private TextView tvHourlyWageTitle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,9 +64,17 @@ public class TimerActivity extends AppCompatActivity {
         bottom_navigation = findViewById(R.id.bottom_navigation);
         secondsPassed = 0;
         isRunning = false;
+        db = FirebaseFirestore.getInstance();
+
+        tvHourlyWageTitle = findViewById(R.id.tvHourlyWageTitle);
+
+        if (User.currentUser != null) {
+            String wageText = "Hourly wage (" + User.currentUser.getCurrency() + "):";
+            tvHourlyWageTitle.setText(wageText);
+        }
+
 
         goalsList = new ArrayList<>();
-        goalsList.add("General Insight");
         if (User.currentUser != null && User.currentUser.getGoals() != null) {
             for( int i = 0; i < User.currentUser.getGoals().size(); i++) {
                 goalsList.add(User.currentUser.getGoals().get(i).getGoalName());
@@ -98,7 +109,86 @@ public class TimerActivity extends AppCompatActivity {
         timeHandler.post(timeRunnable);//לוקחת את הראנבל וזורקת להנדלר כדי שיתחיל לרוץ
 
 
-        btnStart.setOnClickListener(R.id.btnStart);
+
+
+
+
+        btnStart.setOnClickListener(v -> {
+            isRunning = true;
+        });
+
+        btnPause.setOnClickListener(v -> {
+            isRunning = false;
+        });
+
+        btnEnd.setOnClickListener(v -> {
+            isRunning = false;
+            String wageStr = etHourlyWage.getText().toString().trim();
+            if (!wageStr.isEmpty()){
+                if (User.currentUser.getGoals() == null || User.currentUser.getGoals().isEmpty()) {
+                    Toast.makeText(this, "No goals found. Please add a goal first.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                double hourlyWage = Double.parseDouble(wageStr);
+                double exactHours = secondsPassed / 3600.0;
+                double earnedMoney = hourlyWage * exactHours;
+                int selectedPosition = spinnerGoals.getSelectedItemPosition();
+
+                Goal selectedGoal = User.currentUser.getGoals().get(selectedPosition);
+                long timeDiff = System.currentTimeMillis()- selectedGoal.getStartDate();
+                int currentWeekIndex = (int) (timeDiff / (1000L * 60 * 60 * 24 * 7));
+
+                if (currentWeekIndex < selectedGoal.getWeeklyTrack().size()){
+                    WeeklyTrack currentWeek = selectedGoal.getWeeklyTrack().get(currentWeekIndex);
+                    currentWeek.setIncome(currentWeek.getIncome()+earnedMoney);
+                    selectedGoal.setCurrentAmount(selectedGoal.getCurrentAmount() + earnedMoney);
+
+                    db.collection("users")
+                            .document(User.currentUser.getUsername())
+                            .set(User.currentUser)
+                            .addOnSuccessListener(unused -> {
+                                Toast.makeText(this, "Goal saved!", Toast.LENGTH_SHORT).show();
+                                secondsPassed = 0;
+                                finish();
+                            })
+                            .addOnFailureListener(e -> {
+                                Toast.makeText(this, "Failed to save", Toast.LENGTH_SHORT).show();
+                            });
+                }
+            }
+            else
+                Toast.makeText(TimerActivity.this, "enter hourly wage please", Toast.LENGTH_SHORT).show();
+        });
+
+
+
+
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setOnItemSelectedListener(item -> {
+            int id = item.getItemId();
+
+            if (id == R.id.nav_home)
+            {
+                startActivity(new Intent(this, MainActivity.class));
+                return true;
+            }
+            else if (id == R.id.nav_settings)
+            {
+                startActivity(new Intent(this, SettingsActivity.class));
+                return true;
+            }
+            else if (id == R.id.nav_insights)
+            {
+                startActivity(new Intent(this, InsightsActivity.class));
+                return true;
+            }
+            else if (id == R.id.nav_timer)
+            {
+                return true;
+            }
+            return false;
+        });
 
     }
 }

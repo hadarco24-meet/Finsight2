@@ -68,6 +68,11 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(this, InsightsActivity.class));
                 return true;
             }
+            else if (id == R.id.nav_timer)
+            {
+                startActivity(new Intent(this, TimerActivity.class));
+                return true;
+            }
             return false;
         });
 

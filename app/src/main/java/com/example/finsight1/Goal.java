@@ -20,6 +20,7 @@ public class Goal {
     //מחושבים
     private double expectedWeeklyIncome;
     private double expectedWeeklyExpenses;
+    private long startDate;
     private int numberOfWeeks;
 
     public Goal() {
@@ -33,6 +34,7 @@ public class Goal {
         this.monthsTillDue = monthsTillDue;
         this.workDaysPerWeek = workDaysPerWeek;
         this.monthlyExpenses = monthlyExpenses;
+        this.startDate = System.currentTimeMillis();
         this.weeklyTrack = new ArrayList<>();
         weeklyInfo();
         for (int i = 0; i<= numberOfWeeks; i++){
@@ -59,6 +61,14 @@ public class Goal {
 
     public double getMonthlyExpenses() { return monthlyExpenses; }
     public void setMonthlyExpenses(double monthlyExpenses) { this.monthlyExpenses = monthlyExpenses; }
+
+    public long getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(long startDate) {
+        this.startDate = startDate;
+    }
 
     public List<WeeklyTrack> getWeeklyTrack() {
         return weeklyTrack;
