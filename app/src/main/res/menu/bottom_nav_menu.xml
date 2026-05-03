@@ -25,11 +25,11 @@
         android:title="Timer"
         />
 
-    <item
-        android:id="@+id/nav_notification"
-        android:icon="@drawable/ic_notification"
-        android:title="Notification"
-        />
+<!--    <item-->
+<!--        android:id="@+id/nav_notification"-->
+<!--        android:icon="@drawable/ic_notification"-->
+<!--        android:title="Notification"-->
+<!--        />-->
 
 
 

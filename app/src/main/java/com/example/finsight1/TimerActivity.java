@@ -68,12 +68,15 @@ public class TimerActivity extends AppCompatActivity {
 
         tvHourlyWageTitle = findViewById(R.id.tvHourlyWageTitle);
 
+
+        // לוקחת את סימן המטבע השמור ושותלת אותו בתוך הטקסט של הכותרת
         if (User.currentUser != null) {
             String wageText = "Hourly wage (" + User.currentUser.getCurrency() + "):";
             tvHourlyWageTitle.setText(wageText);
         }
 
-
+        //רצה בלולאה על כל האובייקטים מסוג גול של המשתמש ושולפת מתוכם רק את השם לתוך רשימה חדשה
+        //יוצרת אריי אדפטר שמעביר את רשימת השמות לתוך ספינר
         goalsList = new ArrayList<>();
         if (User.currentUser != null && User.currentUser.getGoals() != null) {
             for( int i = 0; i < User.currentUser.getGoals().size(); i++) {
@@ -89,6 +92,7 @@ public class TimerActivity extends AppCompatActivity {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerGoals.setAdapter(adapter);
 
+        //מגדירה את המשימה שתרוץ כל שנייה
         timeHandler = new Handler();
         timeRunnable = new Runnable() {
             @Override
@@ -103,9 +107,12 @@ public class TimerActivity extends AppCompatActivity {
                 timeString = String.format("%02d:%02d:%02d", hours, mins, secs);
                 tvTimer.setText(timeString);
 
-                timeHandler.postDelayed(this, 1000);
+                timeHandler.postDelayed(this, 1000);//גורמת לראנבל לקרוא לעצמו שוב בעוד שניה
             }
         };
+
+
+
         timeHandler.post(timeRunnable);//לוקחת את הראנבל וזורקת להנדלר כדי שיתחיל לרוץ
 
 
@@ -133,12 +140,18 @@ public class TimerActivity extends AppCompatActivity {
                 double hourlyWage = Double.parseDouble(wageStr);
                 double exactHours = secondsPassed / 3600.0;
                 double earnedMoney = hourlyWage * exactHours;
+
+                //שולפים איזה יעד נבחר בספינר
+                //מחשבים את הפרש הזמן בין הרגע הנוכחי לבין תאריך היצירה של היעד
+                // מחלקים את ההפרש במספר המילישניות בשבוע שלם, התוצאה- האינדקס המדויק של השבוע הנוכחי במערך השבועות
                 int selectedPosition = spinnerGoals.getSelectedItemPosition();
 
                 Goal selectedGoal = User.currentUser.getGoals().get(selectedPosition);
                 long timeDiff = System.currentTimeMillis()- selectedGoal.getStartDate();
                 int currentWeekIndex = (int) (timeDiff / (1000L * 60 * 60 * 24 * 7));
 
+                //מושכים את השבוע הנכון, מעדכנים לו את ההכנסה, ומעדכנים את הסכום הכללי של היעד
+                //דורסים את המידע הישן בענן עם המידע המעודכן, מאפסים את הטיימר, סוגרים את המסך
                 if (currentWeekIndex < selectedGoal.getWeeklyTrack().size()){
                     WeeklyTrack currentWeek = selectedGoal.getWeeklyTrack().get(currentWeekIndex);
                     currentWeek.setIncome(currentWeek.getIncome()+earnedMoney);

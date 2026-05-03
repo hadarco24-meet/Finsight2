@@ -41,5 +41,7 @@ public class WeeklyTrackAdapter extends ArrayAdapter<WeeklyTrack> {
             tvExpenses.setText("Expenses: " + currentTrack.getExpenses() + User.currentUser.getCurrency());
         }
         return convertView;
+        //מתחילת האוברייד, נכתב בעזרת AI
+
     }}
 }

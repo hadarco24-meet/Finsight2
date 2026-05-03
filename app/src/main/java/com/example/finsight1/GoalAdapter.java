@@ -29,14 +29,15 @@ public class GoalAdapter extends ArrayAdapter<Goal> {
         TextView tvGoalPercentage = convertView.findViewById(R.id.tvGoalPercentage);
 
         ProgressBar pb = convertView.findViewById(R.id.pbGoalProgress);
+        //עד לפה נכתב בעזרת AI (מתחילת האוברייד)
 
         tvName.setText(goal.getGoalName());
         tvRequired.setText("required: " + goal.getRequiredAmount() + User.currentUser.getCurrency());
         tvCurrent.setText("current: " + goal.getCurrentAmount() + User.currentUser.getCurrency());
 
-        int progress = (int) ((goal.getCurrentAmount() / goal.getRequiredAmount()) * 100.0);
-        pb.setProgress(progress);
-        tvGoalPercentage.setText(progress + "%");
+        int progress = (int) ((goal.getCurrentAmount() / goal.getRequiredAmount()) * 100.0);//מחלקים סכום רצוי בנוכחי, מכפילים ב100 וממירים לINT
+        pb.setProgress(progress); //אומרים לבר להתמלא עד אותו אחוז
+        tvGoalPercentage.setText(progress + "%"); //מציגים סימן אחוזים
 
         return convertView;
     }

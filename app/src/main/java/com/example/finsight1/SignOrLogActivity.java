@@ -40,6 +40,7 @@ public class SignOrLogActivity extends AppCompatActivity {
             }
         });
 
+        //מחשב את הגודל של פסי המערכת, ומוסיף פאדינג לתצוגה המרכזית
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);

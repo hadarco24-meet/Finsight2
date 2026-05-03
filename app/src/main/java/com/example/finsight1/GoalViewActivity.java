@@ -37,12 +37,12 @@ public class GoalViewActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_goal_view);
 
-        db = FirebaseFirestore.getInstance();
+        db = FirebaseFirestore.getInstance(); // יצירת החיבור למסד הנתונים בענן
 
         int goalIndex = getIntent().getIntExtra("goal_index", -1);
         if (goalIndex != -1) {
             currentGoal = User.currentUser.getGoals().get(goalIndex);
-        }
+        }//הMAIN שולח לדף הזה את מיקום היעד ברשימה דרך האינטנט, אם האינדקס תקין, שולפים את היעד מתוך המשתמש הנוכחי ושומרים, אחרת, - כברירת מחדל
 
         tvTitle = findViewById(R.id.tvGoalTitleName);
         tvTarget = findViewById(R.id.tvGoalTargetAmount);
@@ -57,16 +57,16 @@ public class GoalViewActivity extends AppCompatActivity {
         btnSaveInfo = findViewById(R.id.btnSaveInfo);
         btnSaveInfo.setOnClickListener(v -> SaveInfo());
 
-        if (currentGoal != null) {
+        if (currentGoal != null) { //אנחנו בודקים שהיעד נטען בהצלחה. אם כן, כותבים שם מטרה וסכום- כולל מטבע, בתיבות הטקסט
             tvTitle.setText(currentGoal.getGoalName());
             tvTarget.setText("Target: " + currentGoal.getRequiredAmount() + User.currentUser.getCurrency());
-            adapter = new WeeklyTrackAdapter(this, currentGoal.getWeeklyTrack());
+            adapter = new WeeklyTrackAdapter(this, currentGoal.getWeeklyTrack()); //מחברים את הLV לנתונים
             lvWeeklyTrack.setAdapter(adapter);
 
             lvWeeklyTrack.setOnItemClickListener((parent, view, position, id) -> {
                 WeeklyTrack selectedWeek = currentGoal.getWeeklyTrack().get(position);
                 showUpdateDialog(selectedWeek);
-            });
+            });//המשתמש לוחץ על שורה ברשימה, שולפים את השבוע הספציפי לפי מיקום, ושולחים אותו לפונקציה שתפתח דיאלוג לעריכה
 
             etRequiredAmount.setText(Double.toString(currentGoal.getRequiredAmount()));
             etCurrentAmount.setText(Double.toString(currentGoal.getCurrentAmount()));
@@ -123,6 +123,7 @@ public class GoalViewActivity extends AppCompatActivity {
                     String expensesStr = etExpenses.getText().toString();
 
                     if (!incomeStr.isEmpty() && !expensesStr.isEmpty()) {
+                        //מלאים את תיבות הטקסט בנתונים הנוכחיים של השבוע:
                         week.setIncome(Double.parseDouble(incomeStr));
                         week.setExpenses(Double.parseDouble(expensesStr));
                         FirebaseFirestore db =  FirebaseFirestore.getInstance();
@@ -135,14 +136,14 @@ public class GoalViewActivity extends AppCompatActivity {
                                 .addOnFailureListener(e ->
                                         Toast.makeText(this, "Failed to save", Toast.LENGTH_SHORT).show()
                                 );
-                        adapter.notifyDataSetChanged();
+                        adapter.notifyDataSetChanged(); // מודיעה לאדפטר של הרשימה שהנתונים השתנו, ושצריך לשנות את המסך כדי שיראו את העדכון
                     }
                 })
                 .setNegativeButton("Cancel", null)
                 .show();
     }
 
-    public void SaveInfo() {
+    public void SaveInfo() { //הכל בטריי קאץ' כדי שאם המשתמש הזין טקסט במקום מספר התוכנה לא תקרוס, תציג הודעת שגיאה
         try
         {
             String requiredStr = etRequiredAmount.getText().toString().trim();
@@ -164,21 +165,21 @@ public class GoalViewActivity extends AppCompatActivity {
             currentGoal.setWorkDaysPerWeek(Integer.parseInt(daysStr));
             currentGoal.setMonthlyExpenses(Double.parseDouble(expensesStr));
 
-            db.collection("users")
-                    .document(User.currentUser.getUsername())
-                    .set(User.currentUser)
+            db.collection("users") //ניגשים לאוסף משתמשים בענן
+                    .document(User.currentUser.getUsername())//מצביעים על המסמך הספציפי
+                    .set(User.currentUser)//לוקחת את כל אובייקט המשתמש ודורסת את הגרסה הישנה בגרסה החדשה
                     .addOnSuccessListener(unused ->
                     {
                         Toast.makeText(this, "Information updated successfully", Toast.LENGTH_SHORT).show();
                         tvTarget.setText("Target: " + currentGoal.getRequiredAmount() + User.currentUser.getCurrency());
-                    })
+                    })//ירוץ רק אם האינטרנט עבד והנתונים נשמרו בהצלחה
                     .addOnFailureListener(e ->
                     {
                         Toast.makeText(this, "Update failed", Toast.LENGTH_SHORT).show();
-                    });
+                    });//ירוץ אם הייתה שגיאה
 
         }
-        catch (Exception e)
+        catch (Exception e)//אם המשתמש הזין תווים לא חוקיים  הקוד יקפוץ לכאן בTRY במקום קריסה
         {
             Toast.makeText(this, "Please enter numbers only", Toast.LENGTH_SHORT).show();
         }

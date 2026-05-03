@@ -67,13 +67,15 @@ public class LoginActivity extends AppCompatActivity {
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
-                        User loggedUser = documentSnapshot.toObject(User.class);
+                        User loggedUser = documentSnapshot.toObject(User.class);//לוקחת את המידע הזה, ובאופן אוטומטי בונה ממנו אובייקט מהמחלקה יוזר שיצרתי
 
+                        //בודקים מקומית אם הסיסמה ששמורה בענן תואמת לסיסמה שהמשתמש הקליד
                         if (loggedUser != null && loggedUser.getPassword().equals(password)) {
-                            User.currentUser = loggedUser;
+                            User.currentUser = loggedUser;// שומרת את האובייקט שחזר מהשרת לתוך משתנה סטטי
 
                             Toast.makeText(this, "successfully logged in", Toast.LENGTH_SHORT).show();
 
+                            //אם הכל תקין, יוצרים אינטנט שמעביר אותנו לדף הראשי
                             Intent i = new Intent(LoginActivity.this, MainActivity.class);
                             startActivity(i);
                             finish();

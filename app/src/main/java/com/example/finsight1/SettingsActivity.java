@@ -39,6 +39,7 @@ public class SettingsActivity extends AppCompatActivity {
         btnLogout = findViewById(R.id.btnLogout);
         bottomNavigationView = findViewById(R.id.bottom_navigation);
 
+        //לוקחת את האות הראשונה של שם המשתמש, הופכת אותה לאות גדולה, שמה אותה בתוך עיגול
         if (User.currentUser != null) {
             String name = User.currentUser.getUsername();
             tvUsername2.setText(name);
@@ -47,13 +48,18 @@ public class SettingsActivity extends AppCompatActivity {
             }
         }
 
+        //קוראת איזה מטבע שמור כרגע באובייקט המשתמש, ומסמנת את כפתור הרדיו המתאים בקבוצה
         String currentCurrency = User.currentUser.getCurrency();
         if (currentCurrency.equals("₪")) rbGroup.check(R.id.rbShekel);
         else if (currentCurrency.equals("$")) rbGroup.check(R.id.rbDollar);
         else if (currentCurrency.equals("€")) rbGroup.check(R.id.rbEuro);
 
+        //בודקת מול מערכת האנדרואיד האם האפליקציה כרגע מוגדרת למצב לילה
         swDarkMode.setChecked(AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES);
 
+        //ברגע שהמשתמש לוחץ על מתג מצב לילה, משנים את ערך הבוליאן באובייקט המשתמש
+        // משתמשים בפקודה של אנדרואיד שמשנה את צבעי האפליקציה באותו רגע
+        // קוראים לפונקציית שמירה
         swDarkMode.setOnCheckedChangeListener((buttonView, isChecked) -> {
             User.currentUser.setDarkMode(isChecked);
 
@@ -69,6 +75,7 @@ public class SettingsActivity extends AppCompatActivity {
             saveUserToFirebase();
         });
 
+        //מאזין לקבוצת כפתורי רדיו- מזהה איזה כפתור נלחץ, מעדכן את המחרוזת של המטבע באובייקט, ושומר לפיירבייס
         rbGroup.setOnCheckedChangeListener((group, checkedId) -> {
             if (checkedId == R.id.rbShekel) User.currentUser.setCurrency("₪");
             else if (checkedId == R.id.rbDollar) User.currentUser.setCurrency("$");
@@ -110,6 +117,10 @@ public class SettingsActivity extends AppCompatActivity {
             return id == R.id.nav_settings;
         });
     }
+
+    //מאפסים את המשתמש הנוכחי
+    //מנקים את כל ההיסטוריה של המסכים באפליקציה. כדי שהמשתמש לא יוכל ללחוץ על כפתור חזור בטלפון ולהיכנס חזרה לאפליקציה כאילו הוא מחובר
+    //מוחקים את המסכים מהזיכרון
     private void logout() {
         User.currentUser = null;
         Intent intent = new Intent(SettingsActivity.this, LoginActivity.class);
@@ -117,6 +128,8 @@ public class SettingsActivity extends AppCompatActivity {
         startActivity(intent);
         finish();
     }
+
+    //דורסת את המסמך הישן בענן עם המידע החדש
     private void saveUserToFirebase() {
         db.collection("users")
                 .document(User.currentUser.getUsername())
@@ -124,6 +137,9 @@ public class SettingsActivity extends AppCompatActivity {
                 .addOnSuccessListener(unused -> Toast.makeText(this, "Settings saved", Toast.LENGTH_SHORT).show());
     }
 
+    //פותח דיאלוג אזהרה
+    // אם המשתמש לוחץ כן, ניגשת לרשימת היעדים שלו ומפעילה את הפקודה קליר שמרוקנת את הרשימה
+    // הנתונים הריקים נשמרים בענן
     private void showDeleteConfirmation() {
         new AlertDialog.Builder(this)
                 .setTitle("Delete all data")

@@ -71,7 +71,7 @@ public class AddGoalActivity extends AppCompatActivity {
     }
 
     private void saveGoal() {
-        String name = etGoalName.getText().toString().trim();
+        String name = etGoalName.getText().toString().trim(); //שולף לי את המשתנים מהET בXML, שומר אותם כסטרינג ומוריד את הרווחים מההתחלה והסוף
         String amountStr = etGoalAmount.getText().toString().trim();
         String currStr = etCurrentAmount.getText().toString().trim();
         String etMonthsTillDueStr = etMonthsTillDue.getText().toString().trim();
@@ -83,7 +83,7 @@ public class AddGoalActivity extends AppCompatActivity {
         {
             Toast.makeText(this, "Fill all fields!", Toast.LENGTH_SHORT).show();
             return;
-        }
+        } //בודק אם אחד מהשדות ריק, אם כן מקפיץ טוסט
 
         try
         {
@@ -93,21 +93,21 @@ public class AddGoalActivity extends AppCompatActivity {
             int workDays = Integer.parseInt(daysStr);
             double expenses = Double.parseDouble(expStr);
 
-            Goal goal = new Goal(name, required, current, monthsTillDue, workDays, expenses);
-            User.currentUser.getGoals().add(goal);
+            Goal goal = new Goal(name, required, current, monthsTillDue, workDays, expenses); //יוצרת מופע חדש של המללקה GOAL עם הנתנים שהמרתי
+            User.currentUser.getGoals().add(goal); //מוסיפה את היעד החדש לרשימת יעדים של המשתמש
 
-            db.collection("users")
-                    .document(User.currentUser.getUsername())
-                    .set(User.currentUser)
+            db.collection("users") //ניגשים לאוסף משתמשים בענן
+                    .document(User.currentUser.getUsername()) //מצביעים על המסמך הספציפי
+                    .set(User.currentUser) //לוקחת את כל אובייקט המשתמש ודורסת את הגרסה הישנה בגרסה החדשה
                     .addOnSuccessListener(unused -> {
                         Toast.makeText(this, "Goal saved!", Toast.LENGTH_SHORT).show();
                         finish();
-                    })
+                    }) //ירוץ רק אם האינטרנט עבד והנתונים נשמרו בהצלחה
                     .addOnFailureListener(e ->
                             Toast.makeText(this, "Failed to save", Toast.LENGTH_SHORT).show()
-                    );
+                    ); //ירוץ אם הייתה שגיאה
         }
-        catch (NumberFormatException e)
+        catch (NumberFormatException e) //אם המשתמש הזין תווים לא חוקיים  הקוד יקפוץ לכאן בTRY במקום קריסה
         {
             Toast.makeText(this, "Please enter valid numbers", Toast.LENGTH_SHORT).show();
         }

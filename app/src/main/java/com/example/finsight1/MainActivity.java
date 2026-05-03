@@ -28,16 +28,20 @@ public class MainActivity extends AppCompatActivity {
         btnAddGoal = findViewById(R.id.btnAddGoal);
         listGoals = findViewById(R.id.listGoals);
 
+        //מאתחלים רשימה ריקה, יוצרים את הגול אדפטר ומחברים אותו לLV
         goalsList = new ArrayList<>();
         goalAdapter = new GoalAdapter(this, goalsList);
         listGoals.setAdapter(goalAdapter);
 
+        //אם המשתמש לוחץ לחיצה רגילה על אחד הפריטים ברשימה, פותחים את מסך גול ויאיו
+        // מעמיסים על האינטנט את המיקום של הפריט שעליו לחץ, כדי שהמסך הבא ידע איזה יעד להציג
         listGoals.setOnItemClickListener((parent, view, position, id) -> {
             Intent intent = new Intent(MainActivity.this, GoalViewActivity.class);
             intent.putExtra("goal_index", position);
             startActivity(intent);
         });
 
+        // אם המשתמש לוחץ לחיצה ארוכה על אחד הפריטים, אנחנו מפעילים את הפונקציה שמקפיצה דיאלוג למחיקת מטרה
         listGoals.setOnItemLongClickListener((parent, view, position, id) -> {
             showDeleteDialog(position);
             return true;
@@ -79,6 +83,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void loadGoalsFromFirebase() {
+
+        //אם משתמש הגיע למסך הראשי אבל הוא לא מחובר, זורקים אותו למסך התחברות וסוגרים את המסך הראשי
         if (User.currentUser == null) {
             Intent i = new Intent(MainActivity.this, SignOrLogActivity.class);
             startActivity(i);
@@ -86,6 +92,10 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
+
+
+        //מרוקנים את רשימת היעדים המקומית כדי לא להציג פעמיים, מכניסים אליה את הנתונים החדשים שחזרו
+        //קוראים לנוטיפי כדי שהאדפטר יצייר את הרשימה מחדש
         db.collection("users")
                 .document(User.currentUser.getUsername())
                 .get()
@@ -109,6 +119,7 @@ public class MainActivity extends AppCompatActivity {
                 );
     }
 
+    //רצה בכל פעם שהמסך חוזר לחזית. טעינת הנתונים שם כדי לוודא שברגע שחוזרים למסך הראשי ממסך אחר, הרשימה תתרענן ותציג את היעדים החדשים
     @Override
     protected void onResume() {
         super.onResume();
