@@ -37,8 +37,9 @@ public class WeeklyTrackAdapter extends ArrayAdapter<WeeklyTrack> {
 
         if (currentTrack != null){
             tvWeekX.setText("Week " + (position + 1));
-            tvIncome.setText("Income: " + currentTrack.getIncome() + User.currentUser.getCurrency());
-            tvExpenses.setText("Expenses: " + currentTrack.getExpenses() + User.currentUser.getCurrency());
+            //מעגל ל2 ספרות אחרי הנקודה
+            tvIncome.setText("Income: " + String.format("%.2f", currentTrack.getIncome()) + User.currentUser.getCurrency());
+            tvExpenses.setText("Expenses: " + String.format("%.2f", currentTrack.getExpenses()) + User.currentUser.getCurrency());
         }
         return convertView;
         //מתחילת האוברייד, נכתב בעזרת AI

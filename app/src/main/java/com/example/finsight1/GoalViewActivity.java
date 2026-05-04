@@ -59,7 +59,7 @@ public class GoalViewActivity extends AppCompatActivity {
 
         if (currentGoal != null) { //אנחנו בודקים שהיעד נטען בהצלחה. אם כן, כותבים שם מטרה וסכום- כולל מטבע, בתיבות הטקסט
             tvTitle.setText(currentGoal.getGoalName());
-            tvTarget.setText("Target: " + currentGoal.getRequiredAmount() + User.currentUser.getCurrency());
+            tvTarget.setText("Target: " + String.format("%.2f", currentGoal.getRequiredAmount()) + User.currentUser.getCurrency());
             adapter = new WeeklyTrackAdapter(this, currentGoal.getWeeklyTrack()); //מחברים את הLV לנתונים
             lvWeeklyTrack.setAdapter(adapter);
 
@@ -68,8 +68,8 @@ public class GoalViewActivity extends AppCompatActivity {
                 showUpdateDialog(selectedWeek);
             });//המשתמש לוחץ על שורה ברשימה, שולפים את השבוע הספציפי לפי מיקום, ושולחים אותו לפונקציה שתפתח דיאלוג לעריכה
 
-            etRequiredAmount.setText(Double.toString(currentGoal.getRequiredAmount()));
-            etCurrentAmount.setText(Double.toString(currentGoal.getCurrentAmount()));
+            etRequiredAmount.setText(String.format("%.2f", currentGoal.getRequiredAmount()));
+            etCurrentAmount.setText(String.format("%.2f", currentGoal.getCurrentAmount()));
             etMonthsTillDue.setText(Integer.toString(currentGoal.getMonthsTillDue()));
             etWorkDaysPerWeek.setText(Integer.toString(currentGoal.getWorkDaysPerWeek()));
             etMonthlyExpenses.setText(Double.toString(currentGoal.getMonthlyExpenses()));
@@ -119,24 +119,29 @@ public class GoalViewActivity extends AppCompatActivity {
         new AlertDialog.Builder(this)
                 .setView(dialogView)
                 .setPositiveButton("Save", (dialog, which) -> {
-                    String incomeStr = etIncome.getText().toString();
-                    String expensesStr = etExpenses.getText().toString();
+                    String incomeStr = etIncome.getText().toString().trim();
+                    String expensesStr = etExpenses.getText().toString().trim();
 
                     if (!incomeStr.isEmpty() && !expensesStr.isEmpty()) {
-                        //מלאים את תיבות הטקסט בנתונים הנוכחיים של השבוע:
-                        week.setIncome(Double.parseDouble(incomeStr));
-                        week.setExpenses(Double.parseDouble(expensesStr));
-                        FirebaseFirestore db =  FirebaseFirestore.getInstance();
-                        db.collection("users")
-                                .document(User.currentUser.getUsername())
-                                .set(User.currentUser)
-                                .addOnSuccessListener(unused -> {
-                                    Toast.makeText(this, "Week updated!", Toast.LENGTH_SHORT).show();
-                                })
-                                .addOnFailureListener(e ->
-                                        Toast.makeText(this, "Failed to save", Toast.LENGTH_SHORT).show()
-                                );
-                        adapter.notifyDataSetChanged(); // מודיעה לאדפטר של הרשימה שהנתונים השתנו, ושצריך לשנות את המסך כדי שיראו את העדכון
+                        try{
+                            //מלאים את תיבות הטקסט בנתונים הנוכחיים של השבוע:
+                            week.setIncome(Double.parseDouble(incomeStr));
+                            week.setExpenses(Double.parseDouble(expensesStr));
+                            FirebaseFirestore db =  FirebaseFirestore.getInstance();
+                            db.collection("users")
+                                    .document(User.currentUser.getUsername())
+                                    .set(User.currentUser)
+                                    .addOnSuccessListener(unused -> {
+                                        Toast.makeText(GoalViewActivity.this, "Week updated!", Toast.LENGTH_SHORT).show();
+                                        adapter.notifyDataSetChanged();
+                                    })
+                                    .addOnFailureListener(e ->
+                                            Toast.makeText(GoalViewActivity.this, "Failed to save", Toast.LENGTH_SHORT).show()                                    );
+                            adapter.notifyDataSetChanged(); // מודיעה לאדפטר של הרשימה שהנתונים השתנו, ושצריך לשנות את המסך כדי שיראו את העדכון
+                        }
+                        catch (NumberFormatException e){
+                            Toast.makeText(GoalViewActivity.this, "Failed to save", Toast.LENGTH_SHORT).show();
+                        }
                     }
                 })
                 .setNegativeButton("Cancel", null)
@@ -171,7 +176,7 @@ public class GoalViewActivity extends AppCompatActivity {
                     .addOnSuccessListener(unused ->
                     {
                         Toast.makeText(this, "Information updated successfully", Toast.LENGTH_SHORT).show();
-                        tvTarget.setText("Target: " + currentGoal.getRequiredAmount() + User.currentUser.getCurrency());
+                        tvTarget.setText("Target: " + String.format("%.2f", currentGoal.getRequiredAmount()) + User.currentUser.getCurrency());
                     })//ירוץ רק אם האינטרנט עבד והנתונים נשמרו בהצלחה
                     .addOnFailureListener(e ->
                     {

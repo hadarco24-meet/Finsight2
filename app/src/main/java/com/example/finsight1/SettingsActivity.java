@@ -146,7 +146,6 @@ public class SettingsActivity extends AppCompatActivity {
                 .setMessage("Are you sure you want to delete all goals?")
                 .setPositiveButton("Yes, delete", (dialog, which) -> {
                     User.currentUser.getGoals().clear();
-                    saveUserToFirebase();
                     Toast.makeText(this, "deleted all goals", Toast.LENGTH_SHORT).show();
                 })
                 .setNegativeButton("No, cancel", null)

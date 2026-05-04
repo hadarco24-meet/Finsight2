@@ -43,6 +43,7 @@ public class TimerActivity extends AppCompatActivity {
     private String timeString;
     private FirebaseFirestore db;
     private TextView tvHourlyWageTitle;
+    private TextView tvEarnedMoney;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +63,7 @@ public class TimerActivity extends AppCompatActivity {
         btnPause = findViewById(R.id.btnPause);
         btnEnd = findViewById(R.id.btnEnd);
         bottom_navigation = findViewById(R.id.bottom_navigation);
+        tvEarnedMoney = findViewById(R.id.tvEarnedMoney);
         secondsPassed = 0;
         isRunning = false;
         db = FirebaseFirestore.getInstance();
@@ -106,6 +108,21 @@ public class TimerActivity extends AppCompatActivity {
 
                 timeString = String.format("%02d:%02d:%02d", hours, mins, secs);
                 tvTimer.setText(timeString);
+
+                try {
+                    String wageStr = etHourlyWage.getText().toString().trim();
+                    if (!wageStr.isEmpty()) {
+                        double hourlyWage = Double.parseDouble(wageStr);
+                        double exactHours = secondsPassed / 3600.0;
+                        double earnedMoney = hourlyWage * exactHours;
+                        tvEarnedMoney.setText("Earned: " + String.format("%.2f", earnedMoney) + User.currentUser.getCurrency());
+                    } else {
+                        tvEarnedMoney.setText("Earned: 0.00" + User.currentUser.getCurrency());
+                    }
+                }
+                catch (Exception e) {
+                    tvEarnedMoney.setText("Earned: 0.00" + User.currentUser.getCurrency());
+                }
 
                 timeHandler.postDelayed(this, 1000);//גורמת לראנבל לקרוא לעצמו שוב בעוד שניה
             }

@@ -32,8 +32,8 @@ public class GoalAdapter extends ArrayAdapter<Goal> {
         //עד לפה נכתב בעזרת AI (מתחילת האוברייד)
 
         tvName.setText(goal.getGoalName());
-        tvRequired.setText("required: " + goal.getRequiredAmount() + User.currentUser.getCurrency());
-        tvCurrent.setText("current: " + goal.getCurrentAmount() + User.currentUser.getCurrency());
+        tvRequired.setText("required: " + String.format("%.2f", goal.getRequiredAmount()) + User.currentUser.getCurrency());
+        tvCurrent.setText("current: " + String.format("%.2f", goal.getCurrentAmount()) + User.currentUser.getCurrency());
 
         int progress = (int) ((goal.getCurrentAmount() / goal.getRequiredAmount()) * 100.0);//מחלקים סכום רצוי בנוכחי, מכפילים ב100 וממירים לINT
         pb.setProgress(progress); //אומרים לבר להתמלא עד אותו אחוז

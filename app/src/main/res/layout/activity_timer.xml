@@ -57,6 +57,16 @@
             android:textSize="38sp"
             android:layout_marginBottom="32dp"/>
 
+        <TextView
+            android:id="@+id/tvEarnedMoney"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Earned: 0.00₪"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:textColor="#4CAF50"
+            android:layout_marginBottom="32dp"/>
+
         <Button
             android:id="@+id/btnStart"
             android:layout_width="wrap_content"

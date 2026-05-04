@@ -9,8 +9,6 @@ public class User {
     private String currency;
     private ArrayList<Goal> goals;
     private boolean isDarkMode;
-    private boolean btnClearData;
-    private boolean btnLogout;
 
     public static User currentUser = null;
 
@@ -37,22 +35,6 @@ public class User {
 
     public boolean isDarkMode() {
         return isDarkMode;
-    }
-
-    public boolean isBtnClearData() {
-        return btnClearData;
-    }
-
-    public void setBtnClearData(boolean btnClearData) {
-        this.btnClearData = btnClearData;
-    }
-
-    public boolean isBtnLogout() {
-        return btnLogout;
-    }
-
-    public void setBtnLogout(boolean btnLogout) {
-        this.btnLogout = btnLogout;
     }
 
     public void setDarkMode(boolean darkMode) {
