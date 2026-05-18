@@ -213,6 +213,11 @@ public class TimerActivity extends AppCompatActivity {
                 startActivity(new Intent(this, InsightsActivity.class));
                 return true;
             }
+            else if (id == R.id.nav_notification)
+            {
+                startActivity(new Intent(this, NotificationActivity.class));
+                return true;
+            }
             else if (id == R.id.nav_timer)
             {
                 return true;

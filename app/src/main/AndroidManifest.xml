@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
 
     <application
         android:allowBackup="true"
@@ -16,11 +18,14 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".NotificationActivity"
+            android:exported="false" />
+        <activity
             android:name=".TimerActivity"
             android:exported="false" />
         <activity
             android:name=".InsightsActivity"
-            android:exported="true"></activity>
+            android:exported="true" />
         <activity
             android:name=".SettingsActivity"
             android:exported="false" />
@@ -41,13 +46,17 @@
             android:exported="false" />
         <activity
             android:name=".LoginActivity"
-            android:exported="true"></activity>
+            android:exported="true" />
         <activity
             android:name=".SignUpActivity"
             android:exported="false" />
         <activity
             android:name=".MainActivity"
             android:exported="true" />
+
+        <receiver
+            android:name=".NotificationReceiver"
+            android:exported="false" />
     </application>
 
 </manifest>

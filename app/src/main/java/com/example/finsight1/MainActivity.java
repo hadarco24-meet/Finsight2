@@ -77,6 +77,11 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(this, TimerActivity.class));
                 return true;
             }
+            else if (id == R.id.nav_notification)
+            {
+                startActivity(new Intent(this, NotificationActivity.class));
+                return true;
+            }
             return false;
         });
 
