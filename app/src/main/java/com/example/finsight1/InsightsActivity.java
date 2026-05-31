@@ -155,7 +155,7 @@ private void askAI(String promptText) {
     Executor executor = Executors.newSingleThreadExecutor();
 
 
-    //שמים את הטקסט באובייקט קונטנט ושולחים לג'נרייט קונטנט. התשובה מגיעה כפיוצ'ר- תשובה עתידית
+    //שמים את הטקסט באובייקט קונטנט ושולחים לגנרייט קונטנט. התשובה מגיעה כפיוצר- תשובה עתידית
     Content prompt = new Content.Builder()
             .addText(promptText)
             .build();
@@ -180,8 +180,12 @@ private void askAI(String promptText) {
                 pbLoading.setVisibility(View.GONE);
                 btnGenerate.setEnabled(true);
             });
+
+            //לטיפול בשגיאות- לוקחת שגיאה שהתרחשה באפליקציה, מתרגמת את שרשרת הפעולות שהובילה לקריסה לטקסט, ומדפיסה את זה ללוגקאט תחת הכותרת אינסייטסAI
             Log.d("InsightsAI", Log.getStackTraceString(t));
         }
+
+        //מגדיר שההמתנה לתשובה מהAI והטיפול הראשוני בה יתבצעו על ת'רד רקע ולא על הראשי כדי למנוע קפיאת מסך של האפליקציה
     }, executor);}
 
     private void setupNavigation(){

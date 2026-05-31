@@ -29,7 +29,6 @@ import java.util.Calendar;
 
 public class NotificationActivity extends AppCompatActivity {
 
-    // רכיבי התצוגה
     private Switch switchDefaultNotification;
     private Button btnSetCustomTime;
     private EditText etCustomMessage;
@@ -48,16 +47,15 @@ public class NotificationActivity extends AppCompatActivity {
             "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"
     };
 
-    // משתני שמירת נתונים
     private static final String PREFS_NAME = "NotificationPrefs"; // שם הקובץ
-    private boolean isProgrammaticChange = false; // דגל למניעת שגיאות בזמן טעינה
+    private boolean isProgrammaticChange = false; //  למניעת שגיאות בזמן טעינה
     private int selectedDayIndex = 0; // יום ראשון כברירת מחדל
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this); // תצוגה על כל המסך
-        setContentView(R.layout.activity_notification); // טעינת קובץ העיצוב
+        EdgeToEdge.enable(this);
+        setContentView(R.layout.activity_notification);
 
         // התאמת חלון האפליקציה לשוליים של הטלפון
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
@@ -66,7 +64,6 @@ public class NotificationActivity extends AppCompatActivity {
             return insets;
         });
 
-        // קישור משתנים לרכיבים במסך
         switchDefaultNotification = findViewById(R.id.switchDefaultNotification);
         btnSetCustomTime = findViewById(R.id.btnSetCustomTime);
         etCustomMessage = findViewById(R.id.etCustomMessage);
@@ -88,24 +85,24 @@ public class NotificationActivity extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 selectedDayIndex = position; // שמירת היום שנבחר
                 if (!isProgrammaticChange && switchDefaultNotification.isChecked()) {
-                    updateNotification(); // עדכון ההתראה אם הסוויץ' דלוק
+                    updateNotification(); // עדכון ההתראה אם הסוויץ דלוק
                 }
             }
             @Override
             public void onNothingSelected(AdapterView<?> parent) {}
         });
 
-        // מאזין לכיבוי והדלקה של הסוויץ'
+        // מאזין לכיבוי והדלקה של הסוויץ
         switchDefaultNotification.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isProgrammaticChange) return; // מתעלם משינוי שקרה בטעינה
 
             if (isChecked) {
-                updateNotification(); // הפעלה
+                updateNotification();
                 Toast.makeText(this, "Reminder enabled for " + dayNames[selectedDayIndex], Toast.LENGTH_SHORT).show();
             }
             else {
-                cancelNotification(); // ביטול
-                savePreferences(); // שמירת מצב 'כבוי'
+                cancelNotification();
+                savePreferences(); // שמירת מצב כבוי
                 Toast.makeText(this, "Reminder disabled", Toast.LENGTH_SHORT).show();
             }
         });
@@ -114,8 +111,8 @@ public class NotificationActivity extends AppCompatActivity {
         btnSetCustomTime.setOnClickListener(v -> {
             // יצירת והצגת חלון שעון
             TimePickerDialog timePickerDialog = new TimePickerDialog(this, (view, hourOfDay, minute) -> {
-                selectedHour = hourOfDay; // שמירת השעה
-                selectedMinute = minute; // שמירת הדקה
+                selectedHour = hourOfDay;
+                selectedMinute = minute;
                 btnSetCustomTime.setText(String.format("Time: %02d:%02d", hourOfDay, minute)); // עדכון טקסט הכפתור
 
                 if (switchDefaultNotification.isChecked()) {
@@ -125,7 +122,6 @@ public class NotificationActivity extends AppCompatActivity {
             timePickerDialog.show();
         });
 
-        // ניהול תפריט ניווט תחתון
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnItemSelectedListener(item -> {
             int id = item.getItemId();
@@ -151,7 +147,6 @@ public class NotificationActivity extends AppCompatActivity {
             return false;
         });
 
-        // כפתור לבדיקה מהירה להדגמה לבוחנת
         Button btnTestNotification = findViewById(R.id.btnTestNotification);
         btnTestNotification.setOnClickListener(v -> {
             Intent testIntent = new Intent(this, NotificationReceiver.class);
@@ -166,7 +161,7 @@ public class NotificationActivity extends AppCompatActivity {
         String customMsg = etCustomMessage.getText().toString().trim(); // שולף טקסט
         String selectedDayName = dayNames[selectedDayIndex];
 
-        // טקסט דינמי או ברירת מחדל
+        // טקסט מהמשתמש או ברירת מחדל
         String finalMessage = customMsg.isEmpty()
                 ? selectedDayName + " is here! Did you meet your goals this week?"
                 : customMsg;
@@ -209,7 +204,7 @@ public class NotificationActivity extends AppCompatActivity {
         if (alarmManager != null) {
             try {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    // פקודה אגרסיבית שעוקפת חיסכון בסוללה (מדויקת)
+                    // פקודה שעוקפת חיסכון בסוללה
                     alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
                 }
                 else {
@@ -227,7 +222,7 @@ public class NotificationActivity extends AppCompatActivity {
     private void cancelNotification() {
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(this, NotificationReceiver.class);
-        // חובה להשתמש באותו מזהה (1) בדיוק כדי לבטל
+        // חובה להשתמש באותו מזהה בדיוק כדי לבטל
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this,
                 1, intent,
                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);

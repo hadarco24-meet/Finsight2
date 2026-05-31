@@ -42,7 +42,7 @@ public class GoalViewActivity extends AppCompatActivity {
         int goalIndex = getIntent().getIntExtra("goal_index", -1);
         if (goalIndex != -1) {
             currentGoal = User.currentUser.getGoals().get(goalIndex);
-        }//הMAIN שולח לדף הזה את מיקום היעד ברשימה דרך האינטנט, אם האינדקס תקין, שולפים את היעד מתוך המשתמש הנוכחי ושומרים, אחרת, - כברירת מחדל
+        }//הMAIN שולח לדף הזה את מיקום היעד ברשימה דרך האינטנט, אם האינדקס תקין, שולפים את היעד מתוך המשתמש הנוכחי ושומרים
 
         tvTitle = findViewById(R.id.tvGoalTitleName);
         tvTarget = findViewById(R.id.tvGoalTargetAmount);

@@ -17,11 +17,11 @@ public class GoalAdapter extends ArrayAdapter<Goal> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        if (convertView == null) {
+        if (convertView == null) { //אם המערכת עוד לא יצרה את משבצת העיצוב, לוקח את הXML ומנפח אותו כדי שיהפוך לאובייקט גאווה
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_goal, parent, false);
         }
 
-        Goal goal = getItem(position);
+        Goal goal = getItem(position); //שליפט האובייקט הספציפי גול מהמערך לפי מיקום ברשימה
 
         TextView tvName = convertView.findViewById(R.id.tvItemGoalName);
         TextView tvRequired = convertView.findViewById(R.id.tvRequired);

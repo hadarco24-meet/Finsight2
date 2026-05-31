@@ -13,6 +13,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 public class AddGoalActivity extends AppCompatActivity {
 
+    //יצירת משתנים ואובייקטים חדשים
     private EditText etGoalName, etGoalAmount, etCurrentAmount,
             etMonthsTillDue, etWorkDaysPerWeek, etMonthlyExpenses;
     private Button btnSaveGoal;
@@ -24,7 +25,7 @@ public class AddGoalActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_goal);
 
-        db = FirebaseFirestore.getInstance();
+        db = FirebaseFirestore.getInstance(); //משתמשת בפונקציה הסטטית גט אינסטנס כדי לקבל מופע יחיד של ההתקשרות לפיירסטור
 
         etGoalName = findViewById(R.id.etGoalName);
         etGoalAmount = findViewById(R.id.etGoalAmount);
